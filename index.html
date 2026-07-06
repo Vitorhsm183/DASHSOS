@@ -1950,6 +1950,17 @@ const FIELD_ALIASES = {
   'valor_peca_r': 'valor_peca',
   'garantia_meses': 'prazo_garantia_meses',
   'custo_operador_r': 'custo_peca_operador',
+  'ano': 'ano',
+  'lancamentos': 'lancamentos',
+  'regiao': 'regiao',
+  'fotos': 'fotos',
+  'modo_registro': 'modo_registro',
+  'hora_saida': 'hora_saida',
+  'hora_chegada': 'hora_chegada',
+  'substituiu_peca': 'substituiu_peca',
+  'reparo_realizado': 'reparo_realizado',
+  'idempotencykey': 'idempotencykey',
+  'fontecoord': 'fontecoord',
 };
 
 const NUMERIC_FIELDS = new Set([
@@ -2122,28 +2133,41 @@ const REGION_BY_CITY = {
   'contagem': 'Metropolitana',
   'esmeraldas': 'Metropolitana',
   'ibirite': 'Metropolitana',
+  'ibirite': 'Metropolitana',
+  'ibira': 'Metropolitana',
   'lagoa santa': 'Metropolitana',
   'nova lima': 'Metropolitana',
   'ribeirao das neves': 'Metropolitana',
   'sabara': 'Metropolitana',
   'santa luzia': 'Metropolitana',
+  'sao goncalo do rio abaixo': 'Metropolitana',
   'vespasiano': 'Metropolitana',
   'cachoeira do campo': 'Central',
   'congonhas': 'Central',
   'conselheiro lafaiete': 'Central',
+  'curvelo': 'Central',
   'itabirito': 'Central',
+  'joao monlevade': 'Central',
   'mariana': 'Central',
   'ouro preto': 'Central',
   'sete lagoas': 'Central',
+  'diamantina': 'Jequitinhonha',
   'divinopolis': 'Oeste',
   'igarape': 'Oeste',
+  'itaun': 'Oeste',
   'itatiaiucu': 'Oeste',
   'itauna': 'Oeste',
   'mateus leme': 'Oeste',
   'sao joaquim de bicas': 'Oeste',
   'manhuacu': 'Zona da Mata',
+  'matipo': 'Zona da Mata',
   'ponte nova': 'Zona da Mata',
-  'vicosa': 'Zona da Mata'
+  'ponte nova': 'Zona da Mata',
+  'rio pomba': 'Zona da Mata',
+  'vicosa': 'Zona da Mata',
+  'passos': 'Sul',
+  'sao bento': 'Sul',
+  'ipanema': 'Vale do Rio Doce',
 };
 
 function deriveRegiao(cidade) {
@@ -2189,12 +2213,29 @@ function normalizeSheetRow(raw, index) {
   }
   mapped.periodo = mapped.periodo || derivePeriodo(mapped.horario);
 
+  // Normaliza setor para UPPERCASE (compatível com SECTOR_COLORS)
+  if (mapped.setor) mapped.setor = String(mapped.setor).toUpperCase();
   mapped.setor = mapped.setor || 'EM AVALIAÇÃO';
+
   mapped.grupo = mapped.grupo || 'GERAL';
+
+  // Normaliza gravidade para Title Case (planilha pode vir em MAIÚSCULAS)
+  const GRAV_NORMALIZE = {
+    'alta': 'Alta', 'crítica': 'Crítica', 'critica': 'Crítica',
+    'média': 'Média', 'media': 'Média', 'baixa': 'Baixa'
+  };
+  if (mapped.gravidade) {
+    const gKey = String(mapped.gravidade).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    mapped.gravidade = GRAV_NORMALIZE[gKey] || mapped.gravidade;
+  }
   mapped.gravidade = mapped.gravidade || 'Baixa';
+
   mapped.tipo_falha = mapped.tipo_falha || 'Outros';
   mapped.cidade = mapped.cidade || 'Não informado';
-  mapped.regiao = mapped.regiao || deriveRegiao(mapped.cidade);
+  // Se região vier preenchida da planilha, respeita; senão deriva
+  if (!mapped.regiao || mapped.regiao === 'Não informado') {
+    mapped.regiao = deriveRegiao(mapped.cidade);
+  }
   mapped.chassi = mapped.chassi || 'Não informado';
   mapped.defeito = mapped.defeito || 'Não informado';
   mapped.local = mapped.local || mapped.cidade || 'Não informado';
@@ -2248,6 +2289,7 @@ async function refreshFromGoogleSheets({ silent = false } = {}) {
       lastSheetSignature = signature;
       ALL = rows;
       applyPeriod(currentPeriod);
+      updateMapSetorDropdown(); // atualiza dropdown de setor com setores reais
       setSyncStatus(`Fonte: Google Planilhas · ${rows.length} registros`);
       const _ls = document.getElementById('lastSync');
       if (_ls) { _ls.classList.remove('flash'); void _ls.offsetWidth; _ls.classList.add('flash'); }
@@ -2835,10 +2877,9 @@ function initMap() {
     renderMapData();
   });
 
-  // Preencher seletor de setor
-  const setores = [...new Set(ALL.map(r => r.setor).filter(Boolean))];
+  // Preencher seletor de setor (dinâmico)
+  updateMapSetorDropdown();
   const sel = document.getElementById('mapSetor');
-  sel.innerHTML = '<option value="">Todos os setores</option>' + setores.map(s => `<option>${s}</option>`).join('');
   sel.addEventListener('change', renderMapData);
   document.getElementById('mapGravidade').addEventListener('change', renderMapData);
 
@@ -2852,10 +2893,24 @@ function initMap() {
   });
 }
 
+function updateMapSetorDropdown() {
+  const sel = document.getElementById('mapSetor');
+  if (!sel) return;
+  const prev = sel.value;
+  const setores = [...new Set(ALL.map(r => r.setor).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">Todos os setores</option>' + setores.map(s => `<option value="${s}">${s}</option>`).join('');
+  if (prev) sel.value = prev; // mantém a seleção anterior se possível
+}
+
 function getMapFiltered() {
   const setor = document.getElementById('mapSetor').value;
   const grav = document.getElementById('mapGravidade').value;
-  return DATA.filter(r => (!setor || r.setor === setor) && (!grav || r.gravidade === grav));
+  return DATA.filter(r =>
+    (!setor || r.setor === setor) &&
+    (!grav || r.gravidade === grav) &&
+    Number.isFinite(r.lat) && r.lat !== 0 &&
+    Number.isFinite(r.lng) && r.lng !== 0
+  );
 }
 
 function buildPopup(r) {
