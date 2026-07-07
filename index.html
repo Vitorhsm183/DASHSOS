@@ -3097,9 +3097,18 @@ function renderHeatmap() {
   const counts = {};
   dias.forEach(d => { counts[d] = Array(24).fill(0); });
   DATA.forEach(r => {
-    if (!r.dia_semana || !r.horario) return;
-    const h = parseInt(r.horario.slice(0,2));
-    counts[r.dia_semana][h]++;
+    if (!r.horario) return;
+    // Deriva o dia da semana diretamente da data (imune a variações de texto/acentuação
+    // vindas da planilha, ex: "segunda-feira", "SEGUNDA", sem acento etc.)
+    let diaKey = r.dia_semana;
+    if (r.data) {
+      const d = new Date(r.data + 'T00:00:00');
+      if (!Number.isNaN(d.getTime())) diaKey = dias[d.getDay()];
+    }
+    if (!counts[diaKey]) return; // ignora valores que não batem com nenhum dia válido
+    const h = parseInt(String(r.horario).slice(0,2), 10);
+    if (!Number.isFinite(h) || h < 0 || h > 23) return;
+    counts[diaKey][h]++;
   });
   const allVals = dias.flatMap(d => counts[d]);
   const max = Math.max(...allVals, 1);
@@ -3930,15 +3939,7 @@ function switchTab(id) {
     }, 50);
   }
   if (id === 'ops') {
-    setTimeout(() => {
-      renderHeatmap();
-      renderPareto();
-      renderGauge();
-      renderCostChart();
-      renderMaintChart();
-      renderFalhaChart();
-      renderSocorristas();
-    }, 30);
+    setTimeout(() => { renderOpsAll(); }, 30);
   }
   if (id === 'parts') {
     setTimeout(() => { renderPartsAll(); }, 30);
@@ -3961,6 +3962,17 @@ function switchTab(id) {
   if (id === 'records') {
     renderRecordsTable();
   }
+}
+
+// Executa todas as renderizações da aba Operacional de forma resiliente:
+// se uma função falhar (ex: campo inesperado vindo da planilha), as demais
+// continuam rodando em vez de travar a aba inteira.
+function renderOpsAll() {
+  const steps = [renderHeatmap, renderPareto, renderGauge, renderCostChart, renderMaintChart, renderFalhaChart, renderSocorristas];
+  steps.forEach(fn => {
+    try { fn(); }
+    catch (err) { console.error(`Erro ao renderizar ${fn.name}:`, err); }
+  });
 }
 
 // ============================================
@@ -4378,7 +4390,7 @@ function renderAll() {
   // Re-render active tab data
   const active = document.querySelector('.nav-item.active').dataset.tab;
   if (active === 'map' && map) { renderMapData(); renderHotspots(); renderRegiaoChart(); renderClimaChart(); renderRespRegiaoChart(); }
-  if (active === 'ops') { renderHeatmap(); renderPareto(); renderGauge(); renderCostChart(); renderMaintChart(); renderFalhaChart(); renderSocorristas(); }
+  if (active === 'ops') { renderOpsAll(); }
   if (active === 'parts') { renderPartsAll(); }
   if (active === 'predict') { renderPredictKPIs(); renderForecast(); renderAlerts(); renderQpkChart(); renderMttrChart(); renderSlaChart(); renderHealthList(); renderRecs(); renderSazonChart(); renderCpkChart(); renderAnomChart(); }
   if (active === 'records') renderRecordsTable();
