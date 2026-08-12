@@ -4,77 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pássaro Verde · Dashboard de Socorros</title>
-
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-<!-- MapLibre GL (estilo mapcn) -->
 <link href="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js"></script>
-
-<!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/3.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
-
-<!-- Lucide icons — versão fixa: @latest deixa o painel refém de qualquer
-     release futura publicada no CDN, sem revisão. -->
 <script src="https://unpkg.com/lucide@0.446.0/dist/umd/lucide.min.js"></script>
-
 <style>
 :root {
-  /* Pássaro Verde — paleta oficial da marca (inalterada) */
-  --brand-green: #144D29;     /* verde-musgo da asa */
-  --brand-yellow: #C9DB03;    /* amarelo-citrus do corpo */
-  --brand-red: #D42E12;       /* vermelho da pena */
-
-  /* ——— TEMA DARK MODERNO ——— */
-  /* Superfícies */
-  --bg: #0A1410;              /* fundo do app */
-  --bg-sidebar: #080F0C;      /* sidebar, mais profundo */
-  --surface: #11211A;         /* card padrão */
-  --surface-2: #16291F;       /* hover / aninhado */
+  --brand-green: #144D29;     
+  --brand-yellow: #C9DB03;    
+  --brand-red: #D42E12;       
+  --bg: #0A1410;              
+  --bg-sidebar: #080F0C;      
+  --surface: #11211A;         
+  --surface-2: #16291F;       
   --surface-glass: rgba(255,255,255,0.035);
-
-  /* Texto */
-  --ink: #EAF0EA;             /* texto primário (claro) */
-  --ink-soft: #B6C3B9;        /* texto secundário */
-  --muted: #8A968C;           /* texto muted */
+  --ink: #EAF0EA;             
+  --ink-soft: #B6C3B9;        
+  --muted: #8A968C;           
   --muted-soft: #5C655E;
-
-  /* Bordas */
   --rule: rgba(255,255,255,0.08);
   --rule-soft: rgba(255,255,255,0.05);
   --rule-strong: rgba(255,255,255,0.14);
-
-  /* Acentos (mais brilhantes p/ contraste em dark) */
-  --moss: #38C07E;            /* verde de destaque */
+  --moss: #38C07E;            
   --moss-bright: #5AD89A;
   --moss-glow: rgba(56,192,126,0.16);
-  --gold: #D6E94A;            /* amarelo da marca clareado */
+  --gold: #D6E94A;            
   --gold-deep: #C9DB03;
-  --yellow: #D6E94A;          /* alias usado por alguns componentes */
-  --rust: #FF6A4D;            /* crítico/alta em dark */
+  --yellow: #D6E94A;          
+  --rust: #FF6A4D;            
   --rust-soft: rgba(255,106,77,0.14);
-
-  /* Aliases legados (mapeiam nomes antigos → tema dark) */
   --bone: var(--bg);
   --bone-soft: var(--surface-2);
   --paper: var(--surface);
   --forest: var(--bg-sidebar);
   --forest-light: rgba(255,255,255,0.06);
-
-  /* Geometria / sombra */
   --r-card: 18px;
   --r-sm: 12px;
   --r-pill: 999px;
   --shadow: 0 8px 30px rgba(0,0,0,0.35);
   --shadow-glow: 0 0 0 1px var(--rule), 0 12px 40px var(--moss-glow);
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   font-family: 'DM Sans', system-ui, sans-serif;
   background: var(--bg);
@@ -93,18 +67,13 @@ body {
     var(--bg);
   background-attachment: fixed;
 }
-
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, select { font-family: inherit; }
-
-/* === LAYOUT === */
 .app {
   display: grid;
   grid-template-columns: 240px 1fr;
   min-height: 100vh;
 }
-
-/* === SIDEBAR === */
 .sidebar {
   background: var(--forest);
   color: #C5D4C9;
@@ -133,10 +102,6 @@ input, select { font-family: inherit; }
   font-style: italic;
   letter-spacing: -0.02em;
 }
-.brand-sep {
-  color: rgba(255,255,255,0.3);
-  font-weight: 300;
-}
 .brand-name {
   font-family: 'Fraunces', serif;
   font-weight: 400;
@@ -144,15 +109,6 @@ input, select { font-family: inherit; }
   color: #F4EFE6;
   letter-spacing: 0.01em;
 }
-.brand-sub {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin-top: 8px;
-}
-
 .nav-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
@@ -199,7 +155,6 @@ input, select { font-family: inherit; }
   text-align: center;
 }
 .nav-item.active .num { color: var(--moss-bright); }
-
 .sidebar-footer {
   margin-top: auto;
   padding: 24px;
@@ -237,13 +192,10 @@ input, select { font-family: inherit; }
   font-size: 11px;
   color: rgba(255,255,255,0.5);
 }
-
-/* === MAIN === */
 .main {
   display: flex;
   flex-direction: column;
 }
-
 .header {
   background: rgba(10,20,16,0.72);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -276,7 +228,6 @@ input, select { font-family: inherit; }
   color: var(--moss);
   font-style: italic;
 }
-
 .h-right { display: flex; gap: 10px; align-items: center; }
 .filter-pill {
   font-size: 12px;
@@ -294,7 +245,6 @@ input, select { font-family: inherit; }
 .filter-pill:hover { border-color: var(--moss); color: var(--ink); background: var(--surface-2); }
 .filter-pill.active { background: var(--moss); color: #06140C; border-color: var(--moss); box-shadow: 0 4px 16px var(--moss-glow); }
 .filter-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-
 .date-range {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -304,36 +254,12 @@ input, select { font-family: inherit; }
   background: var(--surface);
   border-radius: var(--r-pill);
 }
-
-/* === CONTENT === */
 .content {
   padding: 32px 36px 64px;
   max-width: 1500px;
   margin: 0 auto;
   width: 100%;
 }
-
-.section-head {
-  margin-bottom: 22px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-.section-head h2 {
-  font-family: 'Fraunces', serif;
-  font-weight: 400;
-  font-size: 18px;
-  letter-spacing: -0.01em;
-}
-.section-head .meta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* === KPI ROW === */
 .kpi-row {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
@@ -393,7 +319,6 @@ input, select { font-family: inherit; }
 }
 .kpi-trend.up { background: rgba(255,106,77,0.14); color: var(--rust); }
 .kpi-trend.down { background: rgba(56,192,126,0.14); color: var(--moss); }
-/* neutro: sem base de comparação ou variação desprezível */
 .kpi-trend.flat { background: var(--surface-2); color: var(--muted); font-style: italic; }
 .kpi.hero .kpi-trend.up { background: rgba(255,106,77,0.20); color: #FF8E76; }
 .kpi.hero .kpi-trend.down { background: rgba(56,192,126,0.22); color: var(--moss-bright); }
@@ -404,8 +329,6 @@ input, select { font-family: inherit; }
   font-style: italic;
 }
 .kpi.hero .kpi-foot { color: rgba(255,255,255,0.55); }
-
-/* === GRID === */
 .grid {
   display: grid;
   gap: 24px;
@@ -413,9 +336,6 @@ input, select { font-family: inherit; }
 }
 .grid.cols-2 { grid-template-columns: 2fr 1fr; }
 .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.grid.cols-half { grid-template-columns: 1fr 1fr; }
-
-/* === CARD === */
 .card {
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -435,8 +355,6 @@ input, select { font-family: inherit; }
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  /* gap + no-wrap no meta: sem isto um título longo encavalava no texto da
-     direita ("Recomendações de Manutenção Preventiva" × "GERADAS AUTOMATICAMENTE") */
   gap: 16px;
   margin-bottom: 18px;
   padding-bottom: 14px;
@@ -462,8 +380,6 @@ input, select { font-family: inherit; }
   line-height: 1.4;
 }
 .card.dark .card-meta { color: var(--moss-bright); }
-
-/* === LISTS === */
 .rank-list { list-style: none; }
 .rank-item {
   display: grid;
@@ -507,10 +423,6 @@ input, select { font-family: inherit; }
   opacity: 0.7;
   border-radius: 1px;
 }
-
-/* === HEATMAP === */
-/* Linhas elásticas: as células preenchem a altura reservada em vez de ficarem
-   quadradas e pequenas, deixando um vão morto no rodapé do card. */
 .heatmap-grid {
   display: grid;
   grid-template-columns: 44px repeat(24, 1fr);
@@ -543,8 +455,6 @@ input, select { font-family: inherit; }
   text-align: center;
   padding-bottom: 4px;
 }
-
-/* === LEGENDA DE ESCALA (heatmap / rampas sequenciais) === */
 .escala-legenda {
   margin-top: 14px;
   display: flex;
@@ -562,8 +472,6 @@ input, select { font-family: inherit; }
   border-radius: 2px;
   display: block;
 }
-
-/* === TABLE === */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th {
@@ -581,7 +489,6 @@ th {
 }
 th:hover { color: var(--moss); }
 th:focus-visible { outline: 2px solid var(--moss); outline-offset: -2px; }
-/* indicador visual da coluna ordenada — antes só o comportamento existia */
 th.ordenado { color: var(--moss); }
 th.ordenado::after {
   content: '↑';
@@ -598,19 +505,6 @@ td {
 }
 tr:hover td { background: var(--bone-soft); }
 .cell-mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-.cell-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
-.cell-real {
-  display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  padding: 1px 5px;
-  border-radius: 2px;
-  letter-spacing: 0.1em;
-}
-.cell-real.real { background: rgba(56,192,126,0.16); color: var(--moss); }
-.cell-real.gen { background: var(--surface-2); color: var(--muted); }
-
-/* === BADGES === */
 .badge {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
@@ -624,8 +518,6 @@ tr:hover td { background: var(--bone-soft); }
 .badge.alta { background: rgba(255,106,77,0.16); color: #FF8E76; }
 .badge.med { background: rgba(214,233,74,0.15); color: var(--gold); }
 .badge.low { background: rgba(56,192,126,0.14); color: var(--moss); }
-
-/* === MAP === */
 #map {
   height: 540px;
   width: 100%;
@@ -655,8 +547,6 @@ tr:hover td { background: var(--bone-soft); }
 }
 .map-toggle:hover { border-color: var(--moss); color: var(--ink); background: var(--surface-2); }
 .map-toggle.active { background: var(--moss); color: #06140C; border-color: var(--moss); box-shadow: 0 4px 16px var(--moss-glow); }
-
-/* === LEGENDA DO MAPA === */
 .mapa-legenda {
   display: flex;
   flex-wrap: wrap;
@@ -690,8 +580,6 @@ tr:hover td { background: var(--bone-soft); }
   font-weight: 600;
   color: var(--ink);
 }
-
-/* === AVISO DE COBERTURA === */
 .aviso-cobertura {
   display: flex;
   align-items: center;
@@ -717,8 +605,6 @@ tr:hover td { background: var(--bone-soft); }
   font-size: 11px;
   font-weight: 700;
 }
-
-/* === FILTERS BAR === */
 .filters {
   display: flex;
   gap: 10px;
@@ -765,8 +651,6 @@ tr:hover td { background: var(--bone-soft); }
   border-radius: 4px;
 }
 .filter-clear:focus-visible { outline: 2px solid var(--moss); outline-offset: 1px; }
-
-/* === ALERTS === */
 .alert-list { list-style: none; }
 .alert-item {
   padding: 14px 0;
@@ -783,8 +667,6 @@ tr:hover td { background: var(--bone-soft); }
 .alert-title { font-weight: 500; font-size: 13px; }
 .alert-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .alert-meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; }
-
-/* === GAUGE === */
 .gauge-wrap {
   text-align: center;
   padding: 20px 0;
@@ -803,10 +685,6 @@ tr:hover td { background: var(--bone-soft); }
   text-transform: uppercase;
   color: var(--muted);
 }
-
-/* === HEALTH BAR === */
-/* 3 colunas — bate com o markup gerado por renderHealthList().
-   Antes eram 4 colunas para 3 filhos, o que desalinhava a linha inteira. */
 .health-row {
   display: grid;
   grid-template-columns: 104px 1fr 44px;
@@ -838,11 +716,6 @@ tr:hover td { background: var(--bone-soft); }
 .health-pct.warn { color: var(--gold); }
 .health-pct.crit { color: var(--rust); }
 .health-meta { font-size: 10px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
-
-/* === CHART WRAPPERS ===
-   Chart.js roda com maintainAspectRatio:false, então a ALTURA vem do container.
-   Sem estas regras o canvas caía no default de 150px do elemento <canvas> e os
-   gráficos ficavam achatados e desalinhados entre si dentro do mesmo grid. */
 .chart-wrap {
   position: relative;
   height: 320px;
@@ -851,25 +724,18 @@ tr:hover td { background: var(--bone-soft); }
 .chart-wrap.short { height: 240px; }
 .chart-wrap.tall  { height: 400px; }
 .chart-wrap > canvas { display: block; }
-
 @media (max-width: 640px) {
   .chart-wrap { height: 260px; }
   .chart-wrap.short { height: 220px; }
   .chart-wrap.tall  { height: 300px; }
 }
-
-/* === PARETO === */
 .pareto-wrap { position: relative; height: 320px; }
-
-/* === TABS === */
 .tab { display: none; }
 .tab.active { display: block; animation: fadeIn 0.34s cubic-bezier(0.22, 0.61, 0.36, 1); }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-/* === HOTSPOT LIST === */
 .hotspot {
   padding: 12px 0;
   border-bottom: 1px solid var(--rule-soft);
@@ -892,8 +758,6 @@ tr:hover td { background: var(--bone-soft); }
 .hotspot-name { font-weight: 500; font-size: 13px; }
 .hotspot-region { font-size: 10px; color: var(--muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
 .hotspot-count { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 14px; }
-
-/* MapLibre GL popup customization */
 .maplibregl-popup-content {
   border-radius: var(--r-sm) !important;
   background: var(--surface-2) !important;
@@ -930,8 +794,6 @@ tr:hover td { background: var(--bone-soft); }
   border-bottom: 1px solid rgba(255,255,255,0.15);
   color: var(--moss-bright);
 }
-
-/* === HERO QUOTE === */
 .hero-strip {
   background: linear-gradient(135deg, #11261A 0%, #0B1A12 55%, #0A1410 100%);
   color: var(--ink);
@@ -977,10 +839,6 @@ tr:hover td { background: var(--bone-soft); }
   color: rgba(255,255,255,0.5);
   margin-top: 2px;
 }
-
-/* === ESTADO SEM DADO ===
-   Usado quando uma coluna inteira da planilha está vazia. Deliberadamente
-   discreto: comunica ausência sem parecer erro nem competir com dado real. */
 .sem-dado {
   padding: 26px 22px;
   border: 1px dashed var(--rule-strong);
@@ -1004,29 +862,21 @@ tr:hover td { background: var(--bone-soft); }
   margin: 0 auto;
 }
 .sem-dado-desc strong { color: var(--ink-soft); font-weight: 500; }
-/* dentro de um .chart-wrap o aviso precisa se centralizar na altura reservada */
 .chart-wrap > .sem-dado {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-
-/* === LOADING === */
-.loading { padding: 48px; text-align: center; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; }
-
-/* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-sidebar); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.24); }
-
-/* === RESPONSIVE === */
 @media (max-width: 1100px) {
   .app { grid-template-columns: 1fr; }
   .sidebar { position: static; height: auto; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .predict-kpi-row { grid-template-columns: repeat(3, 1fr); }
   .parts-hero { grid-template-columns: repeat(2, 1fr); }
-  .grid.cols-2, .grid.cols-3, .grid.cols-half { grid-template-columns: 1fr; }
+  .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; }
   .hero-strip { grid-template-columns: 1fr; gap: 24px; }
 }
 @media (max-width: 640px) {
@@ -1035,8 +885,6 @@ tr:hover td { background: var(--bone-soft); }
   .kpi-row, .predict-kpi-row, .parts-hero { grid-template-columns: 1fr; }
   .hero-strip { padding: 22px; }
 }
-
-/* === PRINT (Relatório PDF) === */
 @media print {
   body { background: #fff !important; }
   .sidebar, .header .h-right, .map-controls, .filters .filter-clear { display: none !important; }
@@ -1052,20 +900,16 @@ tr:hover td { background: var(--bone-soft); }
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  h1, h2, .card-title, .kpi-value, .kpi-label, .section-head h2, .crumb, th, td, .kpi-foot, .rank-label, .rank-value,
+  h1, h2, .card-title, .kpi-value, .kpi-label, .crumb, th, td, .kpi-foot, .rank-label, .rank-value,
   .sem-dado-tit, .sem-dado-desc, .predict-kpi-cob, .health-pct, .aviso-cobertura {
     color: #111 !important;
   }
   .grid, .kpi-row, .predict-kpi-row, .parts-hero { gap: 12px; }
-  /* Avisos de dado ausente devem sair no PDF: são parte do resultado. */
   .sem-dado { border: 1px dashed #999 !important; background: #fafafa !important; }
   .aviso-cobertura { border: 1px solid #999 !important; background: #fafafa !important; }
   .predict-kpi.sem-base { opacity: 1; }
-  /* Gráficos ocultos não devem deixar espaço em branco na impressão. */
   .chart-wrap { height: 240px; page-break-inside: avoid; }
 }
-
-/* === BRAND LOGO (sidebar) === */
 .brand-logo-svg {
   width: 110px;
   height: auto;
@@ -1099,12 +943,8 @@ tr:hover td { background: var(--bone-soft); }
   margin-top: 6px;
   font-family: 'JetBrains Mono', monospace;
 }
-
-/* === PEÇAS TAB SPECIFIC === */
-/* Sem colunas de peça na planilha, esconde os nove cards e deixa só o aviso. */
 .tab.sem-pecas > *:not(#partsIndisponivel) { display: none; }
 #partsIndisponivel:empty { display: none; }
-
 .parts-hero {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1143,8 +983,6 @@ tr:hover td { background: var(--bone-soft); }
 }
 .parts-hero .stat-cell.warn .value { color: var(--rust); }
 .parts-hero .stat-cell.good .value { color: var(--moss); }
-
-/* Pareto-style parts ranking */
 .parts-pareto {
   display: flex;
   flex-direction: column;
@@ -1205,8 +1043,6 @@ tr:hover td { background: var(--bone-soft); }
   text-align: right;
   color: var(--muted);
 }
-
-/* Suppliers table */
 .suppliers-table {
   width: 100%;
   border-collapse: collapse;
@@ -1259,25 +1095,6 @@ tr:hover td { background: var(--bone-soft); }
   color: var(--muted-soft);
   font-style: italic;
 }
-
-.warranty-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border: 1px solid var(--moss);
-  color: var(--moss);
-  background: rgba(20,77,41,0.06);
-}
-.warranty-badge.out {
-  border-color: var(--muted-soft);
-  color: var(--muted);
-  background: transparent;
-}
-
-/* Sistema breakdown grid */
 .sistema-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1322,8 +1139,6 @@ tr:hover td { background: var(--bone-soft); }
   height: 100%;
   background: var(--moss);
 }
-
-/* === PREDICT KPI STRIP === */
 .predict-kpi-row {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -1372,7 +1187,6 @@ tr:hover td { background: var(--bone-soft); }
   font-size: 10px;
   color: var(--muted);
 }
-/* cobertura do indicador: quantos registros sustentam o número */
 .predict-kpi-cob {
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
@@ -1384,12 +1198,10 @@ tr:hover td { background: var(--bone-soft); }
 .predict-kpi.sem-base { opacity: 0.62; border-style: dashed; }
 .predict-kpi.sem-base .predict-kpi-cob { color: var(--gold); }
 .predict-kpi-value.vazio { color: var(--muted-soft); }
-
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar">
     <div class="brand brand-block">
       <svg class="brand-logo-svg" viewBox="6000 12700 9000 4200" xmlns="http://www.w3.org/2000/svg" aria-label="Pássaro Verde">
@@ -1402,7 +1214,6 @@ tr:hover td { background: var(--bone-soft); }
       </div>
       <div class="brand-tag">Operações · Socorro de Rua</div>
     </div>
-
     <div class="nav-label">Análises</div>
     <ul class="nav">
       <li class="nav-item active" data-tab="overview"><i data-lucide="layout-dashboard" class="nav-ico"></i><span>Visão Geral</span></li>
@@ -1412,13 +1223,11 @@ tr:hover td { background: var(--bone-soft); }
       <li class="nav-item" data-tab="predict"><i data-lucide="trending-up" class="nav-ico"></i><span>Análise Preditiva</span></li>
       <li class="nav-item" data-tab="records"><i data-lucide="table-2" class="nav-ico"></i><span>Registros</span></li>
     </ul>
-
     <div class="nav-label" style="margin-top: 32px;">Recursos</div>
     <ul class="nav">
       <li class="nav-item" data-acao="csv"><i data-lucide="download" class="nav-ico"></i><span>Exportar CSV</span></li>
       <li class="nav-item" data-acao="print"><i data-lucide="printer" class="nav-ico"></i><span>Relatório PDF</span></li>
     </ul>
-
     <div class="sidebar-footer">
       <div><span class="live-dot"></span><span class="live-text">Sistema Ativo</span></div>
       <div class="user-block">
@@ -1428,8 +1237,6 @@ tr:hover td { background: var(--bone-soft); }
       </div>
     </div>
   </aside>
-
-  <!-- ===== MAIN ===== -->
   <main class="main">
     <header class="header">
       <div class="h-left">
@@ -1443,12 +1250,8 @@ tr:hover td { background: var(--bone-soft); }
         <button class="filter-pill" data-period="30">Últimos 30 dias</button>
       </div>
     </header>
-
     <div class="content">
-
-      <!-- ===== TAB 1: OVERVIEW ===== -->
       <section class="tab active" id="tab-overview">
-
         <div class="hero-strip">
           <h2 id="heroSummary">Frota monitorada em tempo real através da base carregada, com cobertura por municípios e tipos de chassi em operação.</h2>
           <div>
@@ -1462,8 +1265,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="hero-stat-sub">gravidade alta ou crítica no período</div>
           </div>
         </div>
-
-        <!-- KPI Row -->
         <div class="kpi-row">
           <div class="kpi hero">
             <div class="kpi-label">Total de Socorros</div>
@@ -1491,8 +1292,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="kpi-foot">do total apurado</div>
           </div>
         </div>
-
-        <!-- Time series + sector donut -->
         <div class="grid cols-2">
           <div class="card">
             <div class="card-head">
@@ -1509,8 +1308,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="chart-wrap"><canvas id="chartSector"></canvas></div>
           </div>
         </div>
-
-        <!-- Top vehicles, top defects, top lines -->
         <div class="grid cols-3">
           <div class="card">
             <div class="card-head">
@@ -1534,8 +1331,6 @@ tr:hover td { background: var(--bone-soft); }
             <ul class="rank-list" id="rankLines"></ul>
           </div>
         </div>
-
-        <!-- Chassis distribution + period bar -->
         <div class="grid cols-2">
           <div class="card">
             <div class="card-head">
@@ -1552,14 +1347,9 @@ tr:hover td { background: var(--bone-soft); }
             <div class="chart-wrap"><canvas id="chartPeriod"></canvas></div>
           </div>
         </div>
-
       </section>
-
-      <!-- ===== TAB 2: MAP ===== -->
       <section class="tab" id="tab-map">
-
         <div class="aviso-cobertura" id="avisoCobertura" hidden></div>
-
         <div class="map-controls">
           <button class="map-toggle active" data-layer="markers">Marcadores</button>
           <button class="map-toggle" data-layer="cluster">Clusters Dinâmicos</button>
@@ -1576,12 +1366,9 @@ tr:hover td { background: var(--bone-soft); }
             <option value="Baixa">Baixa</option>
           </select>
         </div>
-
         <div class="grid cols-2" style="grid-template-columns: 2.5fr 1fr;">
           <div>
             <div id="map"></div>
-            <!-- Sem isto a gravidade do marcador era comunicada SÓ pela cor,
-                 e só aparecia ao clicar no ponto. -->
             <div class="mapa-legenda" id="mapaLegenda"></div>
           </div>
           <div class="card">
@@ -1592,7 +1379,6 @@ tr:hover td { background: var(--bone-soft); }
             <div id="hotspotList" style="max-height: 510px; overflow-y: auto;"></div>
           </div>
         </div>
-
         <div class="grid cols-3" style="margin-top: 24px;">
           <div class="card">
             <div class="card-head">
@@ -1616,12 +1402,8 @@ tr:hover td { background: var(--bone-soft); }
             <div class="chart-wrap short"><canvas id="chartRespRegiao"></canvas></div>
           </div>
         </div>
-
       </section>
-
-      <!-- ===== TAB 3: OPERATIONAL ===== -->
       <section class="tab" id="tab-ops">
-
         <div class="grid cols-2">
           <div class="card">
             <div class="card-head">
@@ -1629,7 +1411,6 @@ tr:hover td { background: var(--bone-soft); }
               <div class="card-meta">Hora × Dia da Semana</div>
             </div>
             <div id="heatmap"></div>
-            <!-- Legenda gerada da mesma rampa usada pelas células (renderHeatmap) -->
             <div class="escala-legenda" id="heatmapLegenda"></div>
           </div>
           <div class="card">
@@ -1641,7 +1422,6 @@ tr:hover td { background: var(--bone-soft); }
             <div style="margin-top: 12px; font-size: 11px; color: var(--muted); font-style: italic;" id="paretoInsight"></div>
           </div>
         </div>
-
         <div class="grid cols-3">
           <div class="card">
             <div class="card-head">
@@ -1672,7 +1452,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="chart-wrap short"><canvas id="chartMaint"></canvas></div>
           </div>
         </div>
-
         <div class="grid cols-2">
           <div class="card">
             <div class="card-head">
@@ -1689,16 +1468,9 @@ tr:hover td { background: var(--bone-soft); }
             <ul class="rank-list" id="rankSocorristas"></ul>
           </div>
         </div>
-
       </section>
-
-      <!-- ===== TAB 4: PEÇAS & FORNECEDORES ===== -->
       <section class="tab" id="tab-parts">
-
-        <!-- Aviso exibido quando a planilha não traz nenhuma coluna de peças -->
         <div id="partsIndisponivel"></div>
-
-        <!-- Hero stats -->
         <div class="parts-hero">
           <div class="stat-cell">
             <div class="label">Peças trocadas</div>
@@ -1721,8 +1493,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="sub" id="partsEarlyFailRefs">—</div>
           </div>
         </div>
-
-        <!-- Top peças com mais ocorrências -->
         <div class="grid cols-2" style="grid-template-columns: 1.4fr 1fr;">
           <div class="card">
             <div class="card-head">
@@ -1731,7 +1501,6 @@ tr:hover td { background: var(--bone-soft); }
             </div>
             <div class="parts-pareto" id="partsPareto"></div>
           </div>
-
           <div class="card">
             <div class="card-head">
               <div class="card-title">Falhas por Sistema</div>
@@ -1743,8 +1512,6 @@ tr:hover td { background: var(--bone-soft); }
             </div>
           </div>
         </div>
-
-        <!-- Fornecedores ranking -->
         <div class="card" style="margin-top: 24px;">
           <div class="card-head">
             <div class="card-title">Análise de Fornecedores</div>
@@ -1767,8 +1534,6 @@ tr:hover td { background: var(--bone-soft); }
             </table>
           </div>
         </div>
-
-        <!-- Distribuições -->
         <div class="grid cols-2" style="margin-top: 24px;">
           <div class="card">
             <div class="card-head">
@@ -1786,8 +1551,6 @@ tr:hover td { background: var(--bone-soft); }
             <div id="garantiaInsight" style="margin-top: 14px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--rule-soft); padding-top: 12px;"></div>
           </div>
         </div>
-
-        <!-- Peça x Defeito heatmap insights -->
         <div class="grid cols-2" style="margin-top: 24px;">
           <div class="card">
             <div class="card-head">
@@ -1804,13 +1567,8 @@ tr:hover td { background: var(--bone-soft); }
             <ul class="alert-list" id="partsRecommendations"></ul>
           </div>
         </div>
-
       </section>
-
-      <!-- ===== TAB 5: PREDICTIVE ===== -->
       <section class="tab" id="tab-predict">
-
-        <!-- ── KPI HERO STRIP ── -->
         <div class="predict-kpi-row">
           <div class="predict-kpi hero">
             <div class="predict-kpi-label">QPK</div>
@@ -1849,8 +1607,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="predict-kpi-cob"></div>
           </div>
         </div>
-
-        <!-- ── ROW 2: forecast + alerts ── -->
         <div class="grid cols-2" style="grid-template-columns: 2fr 1fr;">
           <div class="card dark">
             <div class="card-head">
@@ -1868,8 +1624,6 @@ tr:hover td { background: var(--bone-soft); }
             <ul class="alert-list" id="alertList"></ul>
           </div>
         </div>
-
-        <!-- ── ROW 3: QPK trend + MTTR + SLA ── -->
         <div class="grid cols-3">
           <div class="card">
             <div class="card-head">
@@ -1894,8 +1648,6 @@ tr:hover td { background: var(--bone-soft); }
             <div class="chart-wrap short"><canvas id="chartSla"></canvas></div>
           </div>
         </div>
-
-        <!-- ── ROW 4: health + recs ── -->
         <div class="grid cols-2">
           <div class="card">
             <div class="card-head">
@@ -1912,8 +1664,6 @@ tr:hover td { background: var(--bone-soft); }
             <ul class="alert-list" id="recList"></ul>
           </div>
         </div>
-
-        <!-- ── ROW 5: sazon + cluster + anomaly ── -->
         <div class="grid cols-3">
           <div class="card">
             <div class="card-head">
@@ -1937,12 +1687,8 @@ tr:hover td { background: var(--bone-soft); }
             <div class="chart-wrap short"><canvas id="chartAnom"></canvas></div>
           </div>
         </div>
-
       </section>
-
-      <!-- ===== TAB 5: RECORDS ===== -->
       <section class="tab" id="tab-records">
-
         <div class="filters">
           <div class="filter-group">
             <span class="filter-label">Buscar</span>
@@ -1965,7 +1711,6 @@ tr:hover td { background: var(--bone-soft); }
           </div>
           <button type="button" class="filter-clear" id="btnLimparFiltros">Limpar filtros</button>
         </div>
-
         <div class="card" style="padding: 0;">
           <div class="table-wrap">
             <table id="recordsTable">
@@ -1997,47 +1742,18 @@ tr:hover td { background: var(--bone-soft); }
             </div>
           </div>
         </div>
-
       </section>
-
     </div>
   </main>
 </div>
-
 <script>
-// ============================================
-// PÁSSARO VERDE · Dashboard de Socorro
-// ============================================
-// FONTE DE DADOS
-// A fonte de verdade é a planilha publicada do Google Sheets (GOOGLE_SHEETS_URL,
-// abaixo). O array ALL embutido logo em seguida é apenas um FALLBACK de 18
-// registros usado enquanto a planilha não responde.
-//
-// Atenção ao ler o fallback: as ocorrências são reais, mas várias colunas dele
-// (custo_estimado, tempo_resposta_min, tempo_reparo_h, km_*, peca_*, fornecedor,
-// health_score) foram preenchidas sinteticamente e NÃO correspondem à operação.
-// A planilha real tem essas colunas majoritariamente vazias — por isso os cards
-// que dependem delas exibem "—" em vez de zero.
-
 let ALL = [{"id":"R0000","is_real":true,"veiculo":18914,"chassi":"O500 RS","data":"2026-04-01","horario":"17:00:00","local":"PROXIMO A TEIXEIRAS MOTEL CHALE","linha":6614,"motorista":13444,"setor":"MECÂNICA","grupo":"SUSPENSÃO","defeito":"GRAMPO DA BALANÇA L/E QUEBRADA","passageiros":25,"responsavel":"FRANZ / EDILSON","cidade":"Belo Horizonte","regiao":"Metropolitana","lat":-19.8818,"lng":-43.9227,"periodo":"Tarde","dia_semana":"Quarta","gravidade":"Alta","tipo_falha":"Suspensão","custo_estimado":3986.39,"tempo_resposta_min":25,"tempo_reparo_h":7.7,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":38,"km_desde_revisao":3644,"idade_veiculo":3.4,"health_score":83,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-999","peca_nome":"PEÇA DIVERSA","sistema":"GERAL","fornecedor":"Mercedes-Benz","valor_peca":660.02,"km_peca":187767,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":660.02},{"id":"R0002","is_real":true,"veiculo":19158,"chassi":"O500 RS","data":"2026-04-03","horario":"12:50:00","local":"PARADA DE CACHOEIRA DO CAMPO","linha":1203,"motorista":13024,"setor":"ELÉTRICA","grupo":"AR CONDICIONADO","defeito":"AR CONDICIONADO NÃO FUNCIONA","passageiros":42,"responsavel":"FELIPE - 9432","cidade":"Cachoeira do Campo","regiao":"Central","lat":-20.3686,"lng":-43.6967,"periodo":"Tarde","dia_semana":"Sexta","gravidade":"Baixa","tipo_falha":"Elétrica","custo_estimado":830.01,"tempo_resposta_min":46,"tempo_reparo_h":2.0,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":52,"km_desde_revisao":2863,"idade_veiculo":13.6,"health_score":47,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"ACL-080","peca_nome":"COMPRESSOR DE AR-CONDICIONADO","sistema":"AR_CONDICIONADO","fornecedor":"Carrier Sutrak","valor_peca":8444.07,"km_peca":182746,"em_garantia":true,"prazo_garantia_meses":6,"custo_peca_operador":413.47},{"id":"R0004","is_real":true,"veiculo":16901,"chassi":"O500 RSD","data":"2026-04-04","horario":"12:40:00","local":"EM FRENTE A ESCOLA PAULO FREIRE E AO RESTAURANTE FOGAO A LENHA","linha":1067,"motorista":13035,"setor":"MECÂNICA","grupo":"PNEUMATICO","defeito":"NÃO COMPLETA AR","passageiros":14,"responsavel":"EDILSON","cidade":"Itabirito","regiao":"Central","lat":-20.246,"lng":-43.7696,"periodo":"Tarde","dia_semana":"Sábado","gravidade":"Alta","tipo_falha":"Pneumática","custo_estimado":3825.4,"tempo_resposta_min":63,"tempo_reparo_h":12.9,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":74,"km_desde_revisao":15282,"idade_veiculo":11.5,"health_score":50,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"PNE-030","peca_nome":"COMPRESSOR DE AR","sistema":"PNEUMATICO","fornecedor":"Wabco","valor_peca":7118.33,"km_peca":232844,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":7118.33},{"id":"R0005","is_real":true,"veiculo":15132,"chassi":"O500 R","data":"2026-04-05","horario":"07:40:00","local":"RANCHO DO BOI (SAÍDA 040)","linha":1028,"motorista":12869,"setor":"MECÂNICA","grupo":"ALIMENTAÇÃO","defeito":"VEÍCULO MUITO FRACO","passageiros":20,"responsavel":"ANISIO - 9211","cidade":"Belo Horizonte","regiao":"Metropolitana","lat":-19.9392,"lng":-43.8947,"periodo":"Manhã","dia_semana":"Domingo","gravidade":"Alta","tipo_falha":"Motor","custo_estimado":3513.93,"tempo_resposta_min":15,"tempo_reparo_h":10.2,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":54,"km_desde_revisao":20762,"idade_veiculo":1.6,"health_score":73,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"MOT-040","peca_nome":"BICO INJETOR","sistema":"MOTOR","fornecedor":"MWM","valor_peca":3386.52,"km_peca":235232,"em_garantia":false,"prazo_garantia_meses":12,"custo_peca_operador":3386.52},{"id":"R0007","is_real":true,"veiculo":21012,"chassi":"K380","data":"2026-04-05","horario":"07:45:00","local":"BR-381 KM 128","linha":9201,"motorista":12104,"setor":"MECÂNICA","grupo":"SUSPENSÃO","defeito":"SUSPENSÃO TRASEIRA NÃO LEVANTA","passageiros":38,"responsavel":"KENNEDY - 8838","cidade":"Nova Lima","regiao":"Metropolitana","lat":-20.0057,"lng":-43.8424,"periodo":"Manhã","dia_semana":"Domingo","gravidade":"Alta","tipo_falha":"Suspensão","custo_estimado":3707.08,"tempo_resposta_min":30,"tempo_reparo_h":9.5,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":52,"km_desde_revisao":22150,"idade_veiculo":1.0,"health_score":98,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"SUS-050","peca_nome":"BOLSA DE AR TRASEIRA","sistema":"SUSPENSAO","fornecedor":"Mercedes-Benz","valor_peca":2870.48,"km_peca":102589,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":2870.48},{"id":"R0006","is_real":true,"veiculo":18914,"chassi":"O500 RS","data":"2026-04-05","horario":"12:00:00","local":"RODOVIARIA DE PONTE NOVA","linha":1121,"motorista":13444,"setor":"ELÉTRICA","grupo":"AR CONDICIONADO","defeito":"AR CONDICIONADO NÃO FUNCIONA","passageiros":35,"responsavel":"IZAQUE - 9477","cidade":"Ponte Nova","regiao":"Zona da Mata","lat":-20.4424,"lng":-42.9456,"periodo":"Tarde","dia_semana":"Domingo","gravidade":"Alta","tipo_falha":"Elétrica","custo_estimado":3881.33,"tempo_resposta_min":64,"tempo_reparo_h":8.9,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":59,"km_desde_revisao":9997,"idade_veiculo":14.3,"health_score":58,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"ACL-080","peca_nome":"COMPRESSOR DE AR-CONDICIONADO","sistema":"AR_CONDICIONADO","fornecedor":"Spheros","valor_peca":6389.12,"km_peca":56980,"em_garantia":true,"prazo_garantia_meses":6,"custo_peca_operador":325.41},{"id":"R0008","is_real":true,"veiculo":21010,"chassi":"K380","data":"2026-04-05","horario":"22:40:00","local":"MATHEUS LEME","linha":62,"motorista":12303,"setor":"MECÂNICA","grupo":"SUSPENSÃO","defeito":"SUSPENSÃO TRASEIRA NÃO LEVANTA","passageiros":28,"responsavel":"ALAN - 7872","cidade":"Mateus Leme","regiao":"Oeste","lat":-19.9606,"lng":-44.4177,"periodo":"Noite","dia_semana":"Domingo","gravidade":"Baixa","tipo_falha":"Suspensão","custo_estimado":754.64,"tempo_resposta_min":79,"tempo_reparo_h":2.1,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":110,"km_desde_revisao":21276,"idade_veiculo":3.0,"health_score":65,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"SUS-050","peca_nome":"BOLSA DE AR TRASEIRA","sistema":"SUSPENSAO","fornecedor":"Continental ContiTech","valor_peca":2351.39,"km_peca":273872,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":2351.39},{"id":"R0011","is_real":true,"veiculo":19148,"chassi":"O500 RSD","data":"2026-04-06","horario":"00:20:00","local":"BH SHOPPING","linha":1121,"motorista":13372,"setor":"MECÂNICA","grupo":"CAIXA DE MARCHA","defeito":"RUIM PARA ENGATAR MARCHA","passageiros":41,"responsavel":"IZAQUE - 9205","cidade":"Vespasiano","regiao":"Metropolitana","lat":-19.6913,"lng":-43.9548,"periodo":"Madrugada","dia_semana":"Segunda","gravidade":"Média","tipo_falha":"Transmissão","custo_estimado":1483.29,"tempo_resposta_min":15,"tempo_reparo_h":4.9,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":39,"km_desde_revisao":5774,"idade_veiculo":3.7,"health_score":70,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-999","peca_nome":"PEÇA DIVERSA","sistema":"GERAL","fornecedor":"Mercedes-Benz","valor_peca":857.73,"km_peca":223772,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":857.73},{"id":"R0010","is_real":true,"veiculo":21010,"chassi":"K380","data":"2026-04-06","horario":"00:40:00","local":"FORMIGA","linha":64,"motorista":12224,"setor":"MECÂNICA","grupo":"SUSPENSÃO","defeito":"BALÃO DE AR FURADO","passageiros":22,"responsavel":"KENNEDY - 8143","cidade":"Santa Luzia","regiao":"Metropolitana","lat":-19.7337,"lng":-43.821,"periodo":"Madrugada","dia_semana":"Segunda","gravidade":"Alta","tipo_falha":"Suspensão","custo_estimado":3302.71,"tempo_resposta_min":55,"tempo_reparo_h":9.1,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":61,"km_desde_revisao":3289,"idade_veiculo":5.8,"health_score":65,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-999","peca_nome":"PEÇA DIVERSA","sistema":"GERAL","fornecedor":"Master Cilindros","valor_peca":1187.36,"km_peca":120064,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":1187.36},{"id":"R0009","is_real":true,"veiculo":15132,"chassi":"O500 R","data":"2026-04-06","horario":"19:30:00","local":"CACHOEIRA DO CAMPO","linha":1028,"motorista":12564,"setor":"MECÂNICA","grupo":"ALIMENTAÇÃO","defeito":"VEÍCULO MUITO FRACO","passageiros":10,"responsavel":"CLAUDINEY - 9293","cidade":"Cachoeira do Campo","regiao":"Central","lat":-20.3628,"lng":-43.6901,"periodo":"Noite","dia_semana":"Segunda","gravidade":"Baixa","tipo_falha":"Motor","custo_estimado":726.32,"tempo_resposta_min":15,"tempo_reparo_h":1.5,"condicao_climatica":"Neblina","feriado":false,"dias_desde_manutencao":63,"km_desde_revisao":18637,"idade_veiculo":15.8,"health_score":45,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"MOT-041","peca_nome":"TURBINA","sistema":"MOTOR","fornecedor":"MWM","valor_peca":6644.55,"km_peca":159034,"em_garantia":false,"prazo_garantia_meses":12,"custo_peca_operador":6644.55},{"id":"R0013","is_real":true,"veiculo":16909,"chassi":"O500 RS","data":"2026-04-07","horario":"19:58:00","local":"BR 040 (ITABIRITO)","linha":1121,"motorista":13239,"setor":"MECÂNICA","grupo":"BORRACHARIA","defeito":"PNEU TEE ESTOURADO","passageiros":10,"responsavel":"FELIPE","cidade":"Itaúna","regiao":"Oeste","lat":-20.0455,"lng":-44.5499,"periodo":"Noite","dia_semana":"Terça","gravidade":"Média","tipo_falha":"Pneumática","custo_estimado":1627.15,"tempo_resposta_min":82,"tempo_reparo_h":3.7,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":15,"km_desde_revisao":3717,"idade_veiculo":4.0,"health_score":89,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-998","peca_nome":"COMPONENTE AUXILIAR","sistema":"GERAL","fornecedor":"Bosch Brasil","valor_peca":686.86,"km_peca":101690,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":686.86},{"id":"R0014","is_real":true,"veiculo":18916,"chassi":"O500 RS","data":"2026-04-08","horario":"01:50:00","local":"TRÊS MARIAS","linha":6614,"motorista":6623,"setor":"MECÂNICA","grupo":"DIREÇÃO","defeito":"VAZAMENTO DE ÓLEO HIDRAULICO","passageiros":12,"responsavel":"JOSÉ RICARDO","cidade":"Lagoa Santa","regiao":"Metropolitana","lat":-19.6483,"lng":-43.9096,"periodo":"Madrugada","dia_semana":"Quarta","gravidade":"Média","tipo_falha":"Outros","custo_estimado":1754.86,"tempo_resposta_min":53,"tempo_reparo_h":3.6,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":29,"km_desde_revisao":2787,"idade_veiculo":16.3,"health_score":49,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-998","peca_nome":"COMPONENTE AUXILIAR","sistema":"GERAL","fornecedor":"Mercedes-Benz","valor_peca":427.99,"km_peca":202289,"em_garantia":true,"prazo_garantia_meses":6,"custo_peca_operador":47.3},{"id":"R0017","is_real":true,"veiculo":20178,"chassi":"OF 1721","data":"2026-04-10","horario":"05:00:00","local":"TERMINAL OURO PRETO","linha":8405,"motorista":13645,"setor":"MECÂNICA","grupo":"SISTEMA DE AR","defeito":"SUBINDO TEMPERATURA","passageiros":2,"responsavel":"FELIPE - 8893","cidade":"Ouro Preto","regiao":"Central","lat":-20.3845,"lng":-43.5213,"periodo":"Madrugada","dia_semana":"Sexta","gravidade":"Alta","tipo_falha":"Outros","custo_estimado":3639.24,"tempo_resposta_min":41,"tempo_reparo_h":12.6,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":63,"km_desde_revisao":12255,"idade_veiculo":14.1,"health_score":42,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"ARR-021","peca_nome":"RADIADOR","sistema":"ARREFECIMENTO","fornecedor":"Valeo","valor_peca":5701.97,"km_peca":137095,"em_garantia":false,"prazo_garantia_meses":12,"custo_peca_operador":5701.97},{"id":"R0019","is_real":true,"veiculo":23183,"chassi":"O500 RS","data":"2026-04-10","horario":"09:47:00","local":"BR-381 SAIDA ITAUNA","linha":8004,"motorista":13530,"setor":"ELÉTRICA","grupo":"AR CONDICIONADO","defeito":"AR CONDICIONADO NÃO FUNCIONA","passageiros":46,"responsavel":"TÚLIO - 7872","cidade":"Itaúna","regiao":"Oeste","lat":-20.0635,"lng":-44.5647,"periodo":"Manhã","dia_semana":"Sexta","gravidade":"Baixa","tipo_falha":"Elétrica","custo_estimado":725.52,"tempo_resposta_min":93,"tempo_reparo_h":2.1,"condicao_climatica":"Chuva","feriado":false,"dias_desde_manutencao":9,"km_desde_revisao":21197,"idade_veiculo":1.0,"health_score":77,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"ACL-083","peca_nome":"GÁS REFRIGERANTE R134A","sistema":"AR_CONDICIONADO","fornecedor":"Carrier Sutrak","valor_peca":520.81,"km_peca":204170,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":520.81},{"id":"R0020","is_real":true,"veiculo":15132,"chassi":"O500 R","data":"2026-04-11","horario":"14:57:00","local":"ITABIRITO","linha":1171,"motorista":13239,"setor":"MECÂNICA","grupo":"SISTEMA DE AR","defeito":"VAZAMENTO DE AR","passageiros":18,"responsavel":"JOSÉ RICARDO","cidade":"Contagem","regiao":"Metropolitana","lat":-19.9398,"lng":-44.0668,"periodo":"Tarde","dia_semana":"Sábado","gravidade":"Baixa","tipo_falha":"Outros","custo_estimado":800.65,"tempo_resposta_min":15,"tempo_reparo_h":1.7,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":76,"km_desde_revisao":18184,"idade_veiculo":8.8,"health_score":49,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-999","peca_nome":"PEÇA DIVERSA","sistema":"GERAL","fornecedor":"Mercedes-Benz","valor_peca":519.41,"km_peca":147196,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":519.41},{"id":"R0021","is_real":true,"veiculo":23183,"chassi":"O500 RS","data":"2026-04-12","horario":"21:40:00","local":"AV. ANTÔNIO CARLOS","linha":11426,"motorista":13586,"setor":"MECÂNICA","grupo":"SISTEMA DE ALIMENTAÇÃO","defeito":"VEÍCULO CORTANDO ACELERAÇÃO","passageiros":41,"responsavel":"RECOLHIDO","cidade":"Brumadinho","regiao":"Metropolitana","lat":-20.1741,"lng":-44.225,"periodo":"Noite","dia_semana":"Domingo","gravidade":"Média","tipo_falha":"Outros","custo_estimado":1860.75,"tempo_resposta_min":81,"tempo_reparo_h":5.1,"condicao_climatica":"Sol","feriado":false,"dias_desde_manutencao":30,"km_desde_revisao":15727,"idade_veiculo":9.3,"health_score":69,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-998","peca_nome":"COMPONENTE AUXILIAR","sistema":"GERAL","fornecedor":"Mercedes-Benz","valor_peca":717.95,"km_peca":199397,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":717.95},{"id":"R0022","is_real":true,"veiculo":19162,"chassi":"O500 RS","data":"2026-04-13","horario":"02:45:00","local":"RIO POMBA","linha":1148,"motorista":12467,"setor":"MECÂNICA","grupo":"SISTEMA DE AR","defeito":"NÃO COMPLETA AR","passageiros":7,"responsavel":"KENNEDY - 9388","cidade":"Ouro Preto","regiao":"Central","lat":-20.3918,"lng":-43.5213,"periodo":"Madrugada","dia_semana":"Segunda","gravidade":"Média","tipo_falha":"Outros","custo_estimado":1300.82,"tempo_resposta_min":80,"tempo_reparo_h":5.9,"condicao_climatica":"Neblina","feriado":false,"dias_desde_manutencao":95,"km_desde_revisao":22918,"idade_veiculo":3.4,"health_score":83,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"PNE-031","peca_nome":"VÁLVULA REGULADORA DE PRESSÃO","sistema":"PNEUMATICO","fornecedor":"Knorr-Bremse","valor_peca":690.73,"km_peca":55298,"em_garantia":true,"prazo_garantia_meses":6,"custo_peca_operador":79.3},{"id":"R0023","is_real":true,"veiculo":11104,"chassi":"O500 RSD","data":"2026-04-13","horario":"10:15:00","local":"PIRAUBA","linha":1195,"motorista":13411,"setor":"MECÂNICA","grupo":"SISTEMA DE AR","defeito":"VAZAMENTO DE AR","passageiros":24,"responsavel":"VALCINEY - 8671","cidade":"Ibirité","regiao":"Metropolitana","lat":-19.9998,"lng":-44.0301,"periodo":"Manhã","dia_semana":"Segunda","gravidade":"Média","tipo_falha":"Outros","custo_estimado":2046.15,"tempo_resposta_min":54,"tempo_reparo_h":4.9,"condicao_climatica":"Neblina","feriado":false,"dias_desde_manutencao":70,"km_desde_revisao":24614,"idade_veiculo":13.3,"health_score":51,"mes":"2026-04","mes_nome":"Abr","ano":2026,"peca_codigo":"GEN-998","peca_nome":"COMPONENTE AUXILIAR","sistema":"GERAL","fornecedor":"Master Cilindros","valor_peca":454.71,"km_peca":251200,"em_garantia":false,"prazo_garantia_meses":6,"custo_peca_operador":454.71}];
 let DATA = [...ALL];
-
-// ============================================
-// GOOGLE PLANILHAS · Fonte externa em tempo quase real
-// ============================================
-// 1) No Google Planilhas: Arquivo > Compartilhar > Publicar na Web.
-// 2) Escolha a aba da base e o formato CSV.
-// 3) Cole a URL publicada abaixo. Exemplo:
-//    https://docs.google.com/spreadsheets/d/e/SEU_ID/pub?gid=0&single=true&output=csv
-//
-// Observação: dashboards HTML estáticos não recebem push em tempo real do Google Sheets.
-// Esta versão consulta a planilha periodicamente e redesenha tudo quando encontrar alteração.
 const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUd7LIOy6L_vn1czWU7W-U0aAUHMpCalRLnX101PMWneE-scVuZKqlxTYJ33T94wX8w1fHkh7bOlX4/pub?gid=0&single=true&output=csv';
-const GOOGLE_SHEETS_REFRESH_MS = 15000; // 15 segundos
+const GOOGLE_SHEETS_REFRESH_MS = 15000; 
 const GOOGLE_SHEETS_KEEP_LOCAL_FALLBACK = true;
 let lastSheetSignature = '';
 let googleSheetsTimer = null;
-
 const FIELD_ALIASES = {
   'veiculo': 'veiculo',
   'veiculo_n': 'veiculo',
@@ -2100,8 +1816,6 @@ const FIELD_ALIASES = {
   'is_real': 'is_real',
   'real': 'is_real',
   'origem': 'is_real',
-
-  // Cabeçalhos da base enviada: aba Registros
   'id': 'id',
   'idade_veic_anos': 'idade_veiculo',
   'idade_veiculo_anos': 'idade_veiculo',
@@ -2130,14 +1844,12 @@ const FIELD_ALIASES = {
   'idempotencykey': 'idempotencykey',
   'fontecoord': 'fontecoord',
 };
-
 const NUMERIC_FIELDS = new Set([
   'veiculo','linha','motorista','passageiros','lat','lng','custo_estimado','tempo_resposta_min',
   'tempo_reparo_h','dias_desde_manutencao','km_desde_revisao','idade_veiculo','health_score',
   'ano','valor_peca','km_peca','prazo_garantia_meses','custo_peca_operador'
 ]);
 const BOOLEAN_FIELDS = new Set(['is_real', 'feriado', 'em_garantia']);
-
 function normalizeHeaderKey(key) {
   return String(key || '')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -2145,31 +1857,26 @@ function normalizeHeaderKey(key) {
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
 }
-
 function canonicalField(key) {
   const normalized = normalizeHeaderKey(key);
   return FIELD_ALIASES[normalized] || normalized;
 }
-
-// Retorna null (e NÃO 0) quando a célula está vazia ou não é numérica.
-// Isso é deliberado: a planilha tem colunas inteiras em branco (custo, tempos, km)
-// e tratá-las como zero produzia indicadores falsos — ex.: "SLA 100%" porque
-// 0 <= 30, e "100% de falha precoce" porque 0 < 60.000 km.
 function parseNumberBR(value) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : null;
   if (value === null || value === undefined || value === '') return null;
   let s = String(value).trim();
   if (!s || s === '-' || s === '—') return null;
   s = s.replace(/R\$|%/g, '').replace(/\s/g, '');
-  if (s.includes(',') && s.includes('.')) s = s.replace(/\./g, '').replace(',', '.');
-  else if (s.includes(',')) s = s.replace(',', '.');
+  if (s.includes(',') && s.includes('.')) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (s.includes(',')) {
+    s = s.replace(',', '.');
+  } else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) {
+    s = s.replace(/\./g, '');
+  }
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
-
-// Retorna null para c\u00e9lula vazia. Uma coluna que EXISTE mas est\u00e1 em branco n\u00e3o
-// significa "false": antes, "em garantia" vazio em 229 linhas virava
-// "0% cobertas por garantia", que parece medi\u00e7\u00e3o e n\u00e3o \u00e9.
 function parseBoolBR(value) {
   if (typeof value === 'boolean') return value;
   if (value === null || value === undefined) return null;
@@ -2179,26 +1886,20 @@ function parseBoolBR(value) {
   if (['nao','n','false','falso','0'].includes(s)) return false;
   return null;
 }
-
 function normalizeDateBR(value) {
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    // Componentes locais, não toISOString(): em GMT-3 o UTC recuaria um dia.
     return `${value.getFullYear()}-${String(value.getMonth()+1).padStart(2,'0')}-${String(value.getDate()).padStart(2,'0')}`;
   }
   if (value === null || value === undefined || value === '') return '';
   const raw = String(value).trim();
   if (!raw) return '';
-
-  // Excel/Google Sheets serial date. Ex.: 46113 = 2026-04-01.
   const serial = Number(raw.replace(',', '.'));
   if (Number.isFinite(serial) && serial > 20000 && serial < 80000) {
     const epoch = new Date(Date.UTC(1899, 11, 30));
     const d = new Date(epoch.getTime() + Math.floor(serial) * 86400000);
     return d.toISOString().slice(0, 10);
   }
-
   if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
-
   const m = raw.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
   if (m) {
     const dd = m[1].padStart(2, '0');
@@ -2206,9 +1907,6 @@ function normalizeDateBR(value) {
     const yyyy = m[3].length === 2 ? '20' + m[3] : m[3];
     return `${yyyy}-${mm}-${dd}`;
   }
-
-  // "20/07" — dia/mês sem ano (acontece na planilha). Infere o ano mais próximo:
-  // usa o ano corrente e recua um ano se a data cair muito no futuro.
   const semAno = raw.match(/^(\d{1,2})[\/.-](\d{1,2})$/);
   if (semAno) {
     const dd = parseInt(semAno[1], 10);
@@ -2221,26 +1919,19 @@ function normalizeDateBR(value) {
       return `${ano}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
     }
   }
-
   const d = new Date(raw);
-  // Usa componentes locais: toISOString() converteria p/ UTC e poderia recuar um dia.
   if (Number.isNaN(d.getTime())) return '';
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
-// Uma data só é utilizável em série temporal se for ISO válida.
 function dataValida(s) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s || ''))) return false;
   const d = new Date(s + 'T00:00:00');
   return !Number.isNaN(d.getTime());
 }
-
 function normalizeTimeBR(value) {
   if (value === null || value === undefined || value === '') return '';
   const raw = String(value).trim();
   if (!raw) return '';
-
-  // Excel/Google Sheets fractional time. Ex.: 0.2916667 = 07:00:00.
   const serial = Number(raw.replace(',', '.'));
   if (Number.isFinite(serial) && serial >= 0 && serial < 1) {
     const totalSeconds = Math.round(serial * 24 * 60 * 60);
@@ -2249,7 +1940,6 @@ function normalizeTimeBR(value) {
     const ss = totalSeconds % 60;
     return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
   }
-
   const m = raw.match(/^(\d{1,2})(?::(\d{1,2}))?(?::(\d{1,2}))?/);
   if (!m) return raw;
   const hh = Math.min(23, parseInt(m[1], 10)).toString().padStart(2, '0');
@@ -2257,11 +1947,9 @@ function normalizeTimeBR(value) {
   const ss = Math.min(59, parseInt(m[3] || '0', 10)).toString().padStart(2, '0');
   return `${hh}:${mm}:${ss}`;
 }
-
 function monthNamePT(monthIndex) {
   return ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][monthIndex] || '';
 }
-
 function derivePeriodo(horario) {
   const h = parseInt(String(horario || '00:00').slice(0, 2), 10);
   if (h < 6) return 'Madrugada';
@@ -2269,7 +1957,6 @@ function derivePeriodo(horario) {
   if (h < 18) return 'Tarde';
   return 'Noite';
 }
-
 function parseCSV(text) {
   const clean = String(text || '').replace(/^\uFEFF/, '').trim();
   if (!clean) return [];
@@ -2304,7 +1991,6 @@ function parseCSV(text) {
     return obj;
   });
 }
-
 function parseGviz(text) {
   const match = String(text || '').match(/setResponse\((.*)\);?\s*$/s);
   if (!match) return [];
@@ -2316,7 +2002,6 @@ function parseGviz(text) {
     return obj;
   });
 }
-
 function parseExternalData(text, contentType) {
   const raw = String(text || '').trim();
   if (!raw) return [];
@@ -2329,8 +2014,6 @@ function parseExternalData(text, contentType) {
   }
   return parseCSV(raw);
 }
-
-
 const REGION_BY_CITY = {
   'belo horizonte': 'Metropolitana',
   'betim': 'Metropolitana',
@@ -2373,18 +2056,12 @@ const REGION_BY_CITY = {
   'sao bento': 'Sul',
   'ipanema': 'Vale do Rio Doce',
 };
-
 function deriveRegiao(cidade) {
   const key = String(cidade || '')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase().trim();
   return REGION_BY_CITY[key] || 'Não informado';
 }
-
-// ——— Canonização de texto ————————————————————————————————————
-// A planilha tem a mesma categoria escrita de várias formas ("MECÂNICA" e
-// "MECANICA", "ELÉTRICA" e "ELETRICA"). Sem isto o donut mostra duas fatias
-// para o mesmo setor e a segunda perde a cor por não estar em SECTOR_COLORS.
 function chaveCanonica(v) {
   return String(v || '')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -2392,8 +2069,6 @@ function chaveCanonica(v) {
     .replace(/[^A-Z0-9]+/g, ' ')
     .trim();
 }
-
-// chave sem acento → grafia oficial exibida
 const SETOR_CANONICO = {
   'MECANICA': 'MECÂNICA',
   'ELETRICA': 'ELÉTRICA',
@@ -2403,21 +2078,14 @@ const SETOR_CANONICO = {
   'OPERACAO': 'OPERAÇÃO',
   'EM AVALIACAO': 'EM AVALIAÇÃO',
 };
-
 function canonizarSetor(v) {
   const k = chaveCanonica(v);
   if (!k) return 'NÃO INFORMADO';
   return SETOR_CANONICO[k] || k;
 }
-
-// Normaliza espaços sem destruir acentuação legítima.
 function canonizarTexto(v) {
   return String(v ?? '').replace(/\s+/g, ' ').trim();
 }
-
-// A planilha traz a região escrita de 21 formas diferentes para ~10 regiões
-// reais ("CENTRAL"/"Central", "Zona da Mata"/"ZONA DA MATA"/"Zona da mata").
-// Sem unificar, nenhuma paleta dá conta — e o excedente caía todo em cinza.
 const REGIAO_CANONICA = {
   'CENTRAL': 'Central',
   'CENTRO OESTE': 'Centro-Oeste',
@@ -2442,8 +2110,6 @@ function canonizarRegiao(v) {
   if (!k) return 'Não informado';
   return REGIAO_CANONICA[k] || canonizarTexto(v);
 }
-
-// Mesmo problema no clima: "Limpo" (135) e "LIMPO" (87) eram duas fatias.
 const CLIMA_CANONICO = {
   'LIMPO': 'Limpo', 'SOL': 'Limpo', 'ENSOLARADO': 'Limpo',
   'NUBLADO': 'Nublado', 'ENCOBERTO': 'Nublado',
@@ -2456,20 +2122,13 @@ function canonizarClima(v) {
   if (!k) return 'Não informado';
   return CLIMA_CANONICO[k] || canonizarTexto(v);
 }
-
-// Índice de risco DERIVADO (não é uma medição da planilha). Só é calculado quando
-// existe pelo menos uma entrada real de manutenção — idade, km desde a revisão ou
-// dias desde a manutenção. Sem nenhuma delas retorna null, e a UI mostra "—".
-// Se a planilha trouxer health_score preenchido, ele tem precedência.
 function deriveHealthScore(row) {
   const provided = parseNumberBR(row.health_score);
   if (provided !== null && provided > 0) return Math.max(0, Math.min(100, Math.round(provided)));
-
   const idade = parseNumberBR(row.idade_veiculo);
   const km    = parseNumberBR(row.km_desde_revisao);
   const dias  = parseNumberBR(row.dias_desde_manutencao);
   if (idade === null && km === null && dias === null) return null;
-
   const sevPenalty   = { 'Crítica': 26, 'Alta': 18, 'Média': 10, 'Baixa': 4 }[row.gravidade] ?? 8;
   const agePenalty   = Math.min(22, (idade ?? 0) * 1.1);
   const kmPenalty    = Math.min(18, (km ?? 0) / 1400);
@@ -2477,7 +2136,6 @@ function deriveHealthScore(row) {
   const score = 100 - sevPenalty - agePenalty - kmPenalty - maintPenalty;
   return Math.max(20, Math.min(100, Math.round(score)));
 }
-
 function normalizeSheetRow(raw, index) {
   const mapped = {};
   Object.entries(raw || {}).forEach(([key, value]) => {
@@ -2487,13 +2145,10 @@ function normalizeSheetRow(raw, index) {
     else if (BOOLEAN_FIELDS.has(field)) mapped[field] = parseBoolBR(value);
     else mapped[field] = typeof value === 'string' ? value.trim() : value;
   });
-
   const hasOriginFlag = Object.prototype.hasOwnProperty.call(mapped, 'is_real');
-
   mapped.id = mapped.id || `S${String(index + 1).padStart(5, '0')}`;
   mapped.data = normalizeDateBR(mapped.data);
   mapped.horario = normalizeTimeBR(mapped.horario);
-
   const d = mapped.data ? new Date(mapped.data + 'T00:00:00') : null;
   if (d && !Number.isNaN(d.getTime())) {
     mapped.ano = d.getFullYear();
@@ -2502,15 +2157,9 @@ function normalizeSheetRow(raw, index) {
     mapped.dia_semana = mapped.dia_semana || ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'][d.getDay()];
   }
   mapped.periodo = mapped.periodo || derivePeriodo(mapped.horario);
-
-  // Canoniza setor removendo acento/caixa/pontuação e devolvendo a grafia oficial,
-  // para "MECANICA" e "MECÂNICA" contarem como um único setor.
   mapped.setor = canonizarSetor(mapped.setor);
   if (mapped.setor === 'NÃO INFORMADO') mapped.setor = 'EM AVALIAÇÃO';
-
   mapped.grupo = canonizarTexto(mapped.grupo) || 'GERAL';
-
-  // Normaliza gravidade para Title Case (planilha pode vir em MAIÚSCULAS)
   const GRAV_NORMALIZE = {
     'alta': 'Alta', 'crítica': 'Crítica', 'critica': 'Crítica',
     'média': 'Média', 'media': 'Média', 'baixa': 'Baixa'
@@ -2520,11 +2169,8 @@ function normalizeSheetRow(raw, index) {
     mapped.gravidade = GRAV_NORMALIZE[gKey] || mapped.gravidade;
   }
   mapped.gravidade = mapped.gravidade || 'Baixa';
-
   mapped.tipo_falha = canonizarTexto(mapped.tipo_falha) || 'Outros';
   mapped.cidade = canonizarTexto(mapped.cidade) || 'Não informado';
-  // Se região vier preenchida da planilha, respeita (canonizando a grafia);
-  // senão deriva da cidade.
   mapped.regiao = canonizarRegiao(mapped.regiao);
   if (mapped.regiao === 'Não informado') {
     mapped.regiao = deriveRegiao(mapped.cidade);
@@ -2533,39 +2179,18 @@ function normalizeSheetRow(raw, index) {
   mapped.defeito = canonizarTexto(mapped.defeito) || 'Não informado';
   mapped.local = canonizarTexto(mapped.local) || mapped.cidade || 'Não informado';
   mapped.condicao_climatica = canonizarClima(mapped.condicao_climatica);
-
-  // Peça/fornecedor ficam NULOS quando ausentes. Antes viravam "GEN-999" /
-  // "PEÇA DIVERSA" / "Não informado" e esses rótulos apareciam como resultado
-  // de análise ("Reforçar estoque: PEÇA DIVERSA").
   mapped.peca_codigo = canonizarTexto(mapped.peca_codigo) || null;
   mapped.peca_nome   = canonizarTexto(mapped.peca_nome) || null;
   mapped.sistema     = canonizarTexto(mapped.sistema) || null;
   mapped.fornecedor  = canonizarTexto(mapped.fornecedor) || null;
-
   mapped.health_score = deriveHealthScore(mapped);
-  // is_real: só é falso quando a planilha marca explicitamente como não-real.
   mapped.is_real = (hasOriginFlag && mapped.is_real === false) ? false : true;
-  // Booleanos: parseBoolBR já devolve null p/ célula vazia — preservamos o null.
   mapped.feriado = mapped.feriado ?? null;
   mapped.em_garantia = mapped.em_garantia ?? null;
   return mapped;
 }
-
-// Assinatura sobre TODAS as linhas. A versão anterior olhava só a contagem e a
-// última linha, então editar qualquer registro no meio da planilha não disparava
-// redesenho — o painel seguia mostrando o dado antigo indefinidamente.
-// Campos de texto livre em que a planilha mistura grafias da MESMA categoria
-// ("MOTOR"/"Motor", "PNEUMATICO"/"Pneumático", "Eletrica"/"Elétrica").
-// Setor, região e clima têm dicionário próprio porque o vocabulário é fechado;
-// estes são abertos, então a grafia vencedora é decidida pelos próprios dados.
 const CAMPOS_UNIFICAR = ['tipo_falha', 'sistema', 'grupo', 'peca_nome', 'cidade', 'fornecedor', 'defeito'];
-
-// `defeito` é uma FRASE descritiva ("ar condicionado não funciona"), não um
-// rótulo curto — leva caixa de frase. Os demais são nomes próprios/categorias
-// e levam Title Case ("Caixa de Marcha", "Belo Horizonte").
 const CAMPOS_CAIXA_DE_FRASE = new Set(['defeito']);
-
-// Preposições e artigos ficam minúsculos no meio do nome.
 const MINUSCULAS_PT = new Set(['de','da','do','das','dos','e','a','o','as','os','em','no','na','para','com']);
 function paraTitleCase(s) {
   return String(s).toLowerCase().split(/\s+/).map((p, i) =>
@@ -2576,11 +2201,6 @@ function paraCaixaDeFrase(s) {
   const t = String(s).trim();
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
-
-// Para cada campo, agrupa pela chave sem acento/caixa e reescreve todos os
-// registros com a grafia mais frequente do grupo. Sem isto o mesmo tipo de
-// falha aparecia como 4 categorias distintas e estourava a paleta, empurrando
-// dezenas de itens para "Outros".
 function unificarGrafias(rows) {
   for (const campo of CAMPOS_UNIFICAR) {
     const grupos = new Map();
@@ -2594,10 +2214,6 @@ function unificarGrafias(rows) {
       const grafia = String(v).trim();
       g.set(grafia, (g.get(grafia) || 0) + 1);
     }
-    // Grafia vencedora. Frequência sozinha não serve: CAIXA ALTA é estilo de
-    // digitação, não o nome da categoria — "MOTOR" ganhava de "Motor" e o
-    // gráfico ficava com rótulos gritando ao lado de rótulos normais.
-    // Prioridade: (1) grafia com caixa natural, (2) com acento, (3) mais frequente.
     const temMinuscula = (s) => /[a-zà-ÿ]/.test(s);
     const temAcento = (s) => /[À-ÿ]/.test(s);
     const vencedora = new Map();
@@ -2609,12 +2225,8 @@ function unificarGrafias(rows) {
         a[0].localeCompare(b[0], 'pt-BR')
       )[0][0];
       if (CAMPOS_CAIXA_DE_FRASE.has(campo)) {
-        // Frase: se veio toda em caixa alta, baixa tudo; em qualquer caso
-        // garante a inicial maiúscula (senão "mangueira de agua furada"
-        // aparecia em minúscula ao lado de "Vazamento de água").
         vencedora.set(k, paraCaixaDeFrase(temMinuscula(melhor) ? melhor : melhor.toLowerCase()));
       } else {
-        // Rótulo de categoria: Title Case só quando não há grafia de caixa natural.
         vencedora.set(k, temMinuscula(melhor) ? melhor : paraTitleCase(melhor));
       }
     }
@@ -2627,7 +2239,6 @@ function unificarGrafias(rows) {
   }
   return rows;
 }
-
 function sheetSignature(rows) {
   if (!rows.length) return 'empty';
   let h1 = 0x811c9dc5, h2 = 0x01000193;
@@ -2641,19 +2252,16 @@ function sheetSignature(rows) {
   }
   return `${rows.length}:${h1.toString(36)}${h2.toString(36)}`;
 }
-
 function setSyncStatus(message) {
   const el = document.getElementById('syncStatus');
   if (el) el.textContent = message;
 }
-
 async function refreshFromGoogleSheets({ silent = false } = {}) {
   const url = String(GOOGLE_SHEETS_URL || '').trim();
   if (!url || url.includes('COLE_AQUI')) {
     setSyncStatus('Fonte: base local. Cole a URL do Google Planilhas no HTML.');
     return;
   }
-
   if (!silent) setSyncStatus('Atualizando Google Planilhas...');
   try {
     const sep = url.includes('?') ? '&' : '?';
@@ -2664,25 +2272,20 @@ async function refreshFromGoogleSheets({ silent = false } = {}) {
       parseExternalData(body, response.headers.get('content-type'))
         .map(normalizeSheetRow)
         .filter(r => r.data || r.veiculo || r.defeito)
-        .filter(r => r.is_real !== false) // remove registro sinalizado como não-real
+        .filter(r => r.is_real !== false) 
     );
-
     if (!rows.length) {
       setSyncStatus('Google Planilhas carregou vazio; mantendo base atual.');
       return;
     }
-
     const signature = sheetSignature(rows);
     if (signature !== lastSheetSignature) {
       lastSheetSignature = signature;
       ALL = rows;
-      // Os slots de cor são derivados da base completa e memorizados; trocar a
-      // base sem invalidar deixaria categorias novas sem slot (caindo em
-      // "Outros") e manteria cores de categorias que não existem mais.
       resetarRegistrosDeCor();
       applyPeriod(currentPeriod);
-      updateMapSetorDropdown();      // setores do mapa
-      preencherFiltrosRegistros();   // setores/chassis da aba Registros
+      updateMapSetorDropdown();      
+      preencherFiltrosRegistros();   
       setSyncStatus(`Fonte: Google Planilhas · ${rows.length} registros`);
       const _ls = document.getElementById('lastSync');
       if (_ls) { _ls.classList.remove('flash'); void _ls.offsetWidth; _ls.classList.add('flash'); }
@@ -2699,39 +2302,27 @@ async function refreshFromGoogleSheets({ silent = false } = {}) {
     if (!GOOGLE_SHEETS_KEEP_LOCAL_FALLBACK && !DATA.length) renderAll();
   }
 }
-
-// ——— Agendamento do polling ————————————————————————————————
-// Antes: setInterval fixo de 15s, rodando para sempre, inclusive com a aba em
-// segundo plano e mesmo quando a planilha estava fora do ar.
 let falhasSeguidas = 0;
-
 function intervaloAtual() {
-  // Backoff exponencial até 5 min após falhas consecutivas.
   const fator = Math.min(2 ** falhasSeguidas, 20);
   return Math.min(GOOGLE_SHEETS_REFRESH_MS * fator, 5 * 60 * 1000);
 }
-
 function agendarProximaSync() {
   if (googleSheetsTimer) clearTimeout(googleSheetsTimer);
   googleSheetsTimer = setTimeout(async () => {
-    // Não consulta com a aba em segundo plano; retoma ao voltar o foco.
     if (!document.hidden) await refreshFromGoogleSheets({ silent: true });
     agendarProximaSync();
   }, intervaloAtual());
 }
-
 function startGoogleSheetsAutoRefresh() {
   refreshFromGoogleSheets();
   agendarProximaSync();
-
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) return;
-    // Ao voltar para a aba, atualiza imediatamente em vez de esperar o ciclo.
     refreshFromGoogleSheets({ silent: true });
     agendarProximaSync();
   });
 }
-
 function getLatestDataDate() {
   const times = ALL.filter(r => dataValida(r.data))
     .map(r => new Date(r.data + 'T00:00:00').getTime());
@@ -2744,123 +2335,48 @@ let recordsPage = 1;
 const RECORDS_PER_PAGE = 25;
 let sortKey = 'data', sortDir = -1;
 let charts = {};
-
-// ============================================
-// Color tokens (mirror CSS)
-// ============================================
 const C = {
-  ink: '#16291F',        // fundo de tooltip → superfície dark
-  paper: '#F4FAF9',      // tinta clara da referência (15.83:1 sobre o card)
-  bone: '#0A1410',
-  forest: '#2E9E8F',     // teal-esmeralda — visível como cor de dado no dark
-  moss: '#38C07E',
+  ink: '#16291F',        
+  paper: '#F4FAF9',      
   mossBright: '#5AD89A',
-  mossLight: '#7BA88A',
-  rust: '#FF6A4D',
-  gold: '#D6E94A',
   rule: 'rgba(255,255,255,0.08)',
   muted: '#9AA69D',
 };
-
-// ============================================
-// SISTEMA DE COR DOS GRÁFICOS
-// ============================================
-// Antes cada gráfico tinha a própria lista curta de cores e caía em cinza no
-// que sobrasse — o donut de setor tinha 3 fatias coloridas e o resto apagado.
-// Agora há um único conjunto validado, aplicado por papel.
-//
-// ——— Paleta derivada das cores de referência do painel ————————————
-// Referência informada: #2E9E8F #38C07E #5AD89A #D6E94A #FF6A4D
-//                       #7BA88A #A0B59F #5A7A5C  (+ superfícies e tinta)
-//
-// Essas cores são os tokens de CHROME do painel (acento e texto secundário),
-// não uma paleta de séries — e medidas contra a superfície real dos cards
-// (#11211A) elas falham como preenchimento:
-//   · seis estão acima da banda de luminosidade (claras demais p/ fundo escuro)
-//   · #7BA88A, #A0B59F e #5A7A5C leem como CINZA (croma abaixo do piso)
-//   · #A0B59F ↔ #7BA88A são indistinguíveis mesmo com visão normal (ΔE 6.7)
-//
-// Então cada slot MANTÉM O MATIZ da referência e só desloca a luminosidade
-// para dentro da banda — o painel continua com a mesma cara, e o gráfico fica
-// legível. Validado em modo escuro sobre #11211A:
-//   banda · croma · CVD 8.4 (alvo ≥8) · visão normal 15.1 (piso ≥15)
-//   · contraste ≥3:1  → todos PASS
-// SÃO QUATRO, e não mais, porque a referência tem exatamente quatro matizes
-// distintos — o resto da lista são variações de verde. Um 5º slot teria de ser
-// gêmeo de luminosidade de um matiz já usado, e todo gêmeo colide em algum
-// ponto do anel: num donut a última fatia encosta na primeira, e as duas
-// versões do verde ficavam a ΔE 10.1 (piso 15) — indistinguíveis lado a lado
-// na legenda, o que apareceu na prática no gráfico empilhado.
-// Testados e descartados: verde escuro (ΔE 11.8 com contraste ok, ou 17.4 já
-// abaixo de 3:1) e um tijolo derivado do #FF6A4D (nenhuma ordem do anel passou).
 const PALETA_CATEGORICA = [
-  '#07a667', // 1 ← #38C07E (moss)
-  '#e63002', // 2 ← #FF6A4D (rust)
-  '#079b8b', // 3 ← #2E9E8F (teal)
-  '#8e9c04', // 4 ← #D6E94A (citrus)
+  '#07a667', 
+  '#e63002', 
+  '#079b8b', 
+  '#8e9c04', 
 ];
-
-// Neutro do agregado "Outros" — passo mais claro da sage #A0B59F da referência.
-// A sage original (#7BA88A) ficava a ΔE 9.3 do slot 1, e um neutro não pode
-// encostar em slot nenhum: "sem identidade" viraria "mais uma categoria".
-// Este se separa dos quatro (pior nv 20.4 · cvd 15.1) com 9.29:1 de contraste.
 const COR_OUTROS = '#B8C4BD';
-
-// Máximo de categorias com cor própria antes de agregar em "Outros".
-// A regra é do método: um matiz extra nunca é gerado — dobra-se em "Outros".
 const MAX_CATEGORIAS = PALETA_CATEGORICA.length;
-
-// Rampa sequencial de um matiz só, para MAGNITUDE (não identidade).
-// Derivada do #38C07E da referência. Validada como rampa ordinal:
-// L monotônica, ΔL ≥ 0.06, ponta escura 2.56:1 sobre a superfície.
 const RAMPA_VERDE = ['#006c3f', '#01804b', '#039c5f', '#0bb974', '#31d391'];
-const COR_VAZIO = '#16261D'; // "zero" recua para perto da superfície
-
-// Variante da mesma rampa para BARRAS. A RAMPA_VERDE acima começa em 2.56:1
-// porque no mapa de calor o passo mais escuro representa "zero" e deve mesmo
-// recuar para perto do fundo. Numa barra não existe zero — toda barra é um
-// valor real e precisa ser vista —, então o passo mais escuro sobe para
-// 3.52:1. Também valida como rampa ordinal (L monotônica, ΔL ≥ 0.06).
+const COR_VAZIO = '#16261D'; 
 const RAMPA_BARRAS = ['#078451', '#059a5f', '#03b16d', '#0dc87d', '#0ae08c'];
-
-// Status: escala fixa, de significado reservado. Nunca vira "série 4".
-// Contraste na superfície #11211A: 4.98 / 9.11 / 6.34 / 3.48 — todos ≥3:1.
 const STATUS = {
   bom:      '#0ca30c',
   atencao:  '#fab219',
   serio:    '#ec835a',
   critico:  '#d03b3b',
 };
-
-// Gravidade é ORDINAL e significa bom→ruim, então veste status, não categórico.
 const GRAV_COLORS = {
   'Baixa':   STATUS.bom,
   'Média':   STATUS.atencao,
   'Alta':    STATUS.serio,
   'Crítica': STATUS.critico,
 };
-
-// ——— Atribuição de cor por ENTIDADE ————————————————————————
-// A cor segue a entidade, nunca a posição no ranking: filtrar o período não
-// pode repintar as categorias que sobraram. Por isso a ordem dos slots é
-// calculada uma vez sobre a base COMPLETA (ALL) e memorizada por domínio.
 const _registrosDeCor = new Map();
-
 function registroDeCor(dominio, campo) {
   if (_registrosDeCor.has(dominio)) return _registrosDeCor.get(dominio);
-
   const totais = {};
   ALL.forEach(r => {
     const v = r[campo];
     if (v === null || v === undefined || v === '') return;
     totais[v] = (totais[v] || 0) + 1;
   });
-
-  // Ordena por volume total (estável) e dá slot fixo aos MAX_CATEGORIAS maiores.
   const ordenadas = Object.entries(totais).sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])));
   const mapa = new Map();
   ordenadas.slice(0, MAX_CATEGORIAS).forEach(([nome], i) => mapa.set(nome, PALETA_CATEGORICA[i]));
-
   const registro = {
     cor: (nome) => mapa.get(nome) || COR_OUTROS,
     temSlot: (nome) => mapa.has(nome),
@@ -2869,12 +2385,7 @@ function registroDeCor(dominio, campo) {
   _registrosDeCor.set(dominio, registro);
   return registro;
 }
-
-// Invalida os registros quando a base muda (nova sincronização da planilha).
 function resetarRegistrosDeCor() { _registrosDeCor.clear(); }
-
-// Agrupa em top-N + "Outros", devolvendo rótulos, valores e cores alinhados.
-// É assim que uma 9ª categoria entra no gráfico sem inventar um matiz novo.
 function agruparComOutros(registros, campo, dominio) {
   const reg = registroDeCor(dominio, campo);
   const contagem = {};
@@ -2883,54 +2394,30 @@ function agruparComOutros(registros, campo, dominio) {
     if (v === null || v === undefined || v === '') return;
     contagem[v] = (contagem[v] || 0) + 1;
   });
-
   const principais = [], outros = [];
   Object.entries(contagem).forEach(([nome, n]) => {
     (reg.temSlot(nome) ? principais : outros).push([nome, n]);
   });
   principais.sort((a, b) => b[1] - a[1]);
-
   const labels = principais.map(([n]) => n);
   const valores = principais.map(([, n]) => n);
   const cores = labels.map(n => reg.cor(n));
-
   if (outros.length) {
-    // Com um único item na cauda, "Outros (1)" esconderia um nome sem economizar
-    // espaço nenhum — então ele mantém o próprio nome e só veste o neutro.
     outros.sort((a, b) => b[1] - a[1]);
     labels.push(outros.length === 1 ? outros[0][0] : `Outros (${outros.length})`);
     valores.push(outros.reduce((s, [, n]) => s + n, 0));
     cores.push(COR_OUTROS);
   }
-  // detalheOutros só faz sentido quando há mais de um item agregado.
   return { labels, valores, cores, detalheOutros: outros.length > 1 ? outros : [] };
 }
-
-// Cor de um valor contínuo na rampa sequencial (0..1).
 function corDaRampa(t) {
   if (!(t > 0)) return COR_VAZIO;
   const i = Math.min(RAMPA_VERDE.length - 1, Math.floor(t * RAMPA_VERDE.length));
   return RAMPA_VERDE[i];
 }
-
-// Cor da superfície do card — usada como "respiro" de 2px entre fatias/barras
-// adjacentes, para que duas cores nunca encostem diretamente uma na outra.
 const SUPERFICIE_CARD = '#11211A';
-
-// Compat: alguns pontos ainda referenciam SECTOR_COLORS por nome.
-const SECTOR_COLORS = new Proxy({}, {
-  get: (_, nome) => registroDeCor('setor', 'setor').cor(String(nome)),
-});
-
-// ============================================
-// Dependências externas
-// ============================================
-// Chart.js e MapLibre vêm de CDN. Se qualquer um falhar (offline, bloqueio de
-// rede, CDN fora), o acesso direto a `Chart.defaults` lançava aqui e matava o
-// script inteiro — a página ficava em branco, sem explicação.
 const TEM_CHART = typeof Chart !== 'undefined';
 const TEM_MAPLIBRE = typeof maplibregl !== 'undefined';
-
 if (!TEM_CHART || !TEM_MAPLIBRE) {
   window.addEventListener('DOMContentLoaded', () => {
     const faltando = [!TEM_CHART && 'Chart.js (gráficos)', !TEM_MAPLIBRE && 'MapLibre (mapa)'].filter(Boolean);
@@ -2942,16 +2429,10 @@ if (!TEM_CHART || !TEM_MAPLIBRE) {
     document.querySelector('.main')?.prepend(banner);
   });
 }
-
-// Stub inofensivo para o resto do código não precisar checar em cada chamada.
 if (!TEM_CHART) {
   window.Chart = function () { return { destroy() {}, update() {}, data: { labels: [], datasets: [] } }; };
   window.Chart.defaults = { font: {}, plugins: { legend: {}, tooltip: {} } };
 }
-
-// ============================================
-// Chart.js global defaults
-// ============================================
 Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = C.muted;
@@ -2966,14 +2447,6 @@ Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.10)';
 Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.titleFont = { family: "'JetBrains Mono', monospace", size: 10, weight: '500' };
 Chart.defaults.plugins.tooltip.bodyFont = { family: "'DM Sans', sans-serif", size: 12 };
-
-// ============================================
-// HELPERS
-// ============================================
-
-// Escapa texto vindo da planilha antes de entrar em innerHTML/setHTML.
-// Sem isto, uma célula com <img src=x onerror="..."> executa JavaScript no
-// navegador de quem abre o dashboard — quem edita a planilha vira autor de código.
 function esc(v) {
   if (v === null || v === undefined) return '';
   return String(v)
@@ -2983,22 +2456,15 @@ function esc(v) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
-// Número seguro para interpolar em atributo/JS inline (mapa: flyTo).
 function num(v, fallback = 0) {
   return (typeof v === 'number' && Number.isFinite(v)) ? v : fallback;
 }
-
-// Estado vazio honesto: diz O QUE falta na planilha em vez de mostrar 0/100%.
-// `descricaoHtml` é conteúdo controlado por nós (permite <strong>), nunca dado externo.
 function avisoSemDado(titulo, descricaoHtml) {
   return `<div class="sem-dado">
     <div class="sem-dado-tit">${esc(titulo)}</div>
     <div class="sem-dado-desc">${descricaoHtml}</div>
   </div>`;
 }
-
-// Sobrepõe o aviso no container do gráfico e esconde o canvas, sem removê-lo
-// do DOM (a instância Chart.js pode ser recriada depois).
 function mostrarAviso(container, titulo, descricaoHtml) {
   if (!container) return;
   limparAviso(container);
@@ -3012,8 +2478,6 @@ function limparAviso(container) {
   const canvas = container.querySelector('canvas');
   if (canvas) canvas.style.visibility = '';
 }
-
-// Destrói um gráfico e mostra o aviso — usado quando a coluna base está vazia.
 function graficoSemDado(chartKey, canvasId, titulo, descricaoHtml) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return true;
@@ -3021,22 +2485,15 @@ function graficoSemDado(chartKey, canvasId, titulo, descricaoHtml) {
   mostrarAviso(canvas.parentElement, titulo, descricaoHtml);
   return true;
 }
-
 const fmt = {
   num: (n) => new Intl.NumberFormat('pt-BR').format(Math.round(n || 0)),
   curr: (n) => new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 }).format(n || 0),
   curr2: (n) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(n || 0),
   date: (d) => {
-    // Datas ISO são parseadas como locais para não recuar um dia em GMT-3.
     const x = /^\d{4}-\d{2}-\d{2}$/.test(String(d || '')) ? new Date(d + 'T00:00:00') : new Date(d);
     return Number.isNaN(x.getTime()) ? SEM_DADO : x.toLocaleDateString('pt-BR');
-  },
-  monthYear: (d) => {
-    const x = new Date(d);
-    return ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][x.getMonth()] + '/' + String(x.getFullYear()).slice(-2);
   }
 };
-
 function groupBy(arr, key) {
   return arr.reduce((m, x) => {
     const k = typeof key === 'function' ? key(x) : x[key];
@@ -3044,15 +2501,7 @@ function groupBy(arr, key) {
     return m;
   }, {});
 }
-function topN(obj, n=8) {
-  return Object.entries(obj).map(([k,v]) => [k, v.length]).sort((a,b) => b[1]-a[1]).slice(0, n);
-}
-
-// ——— Agregações cientes de ausência ———————————————————————————
-// avg/sum devolvem null quando NENHUM registro tem o campo preenchido, para que
-// o card exiba "—" em vez de um zero que parece medição.
 const SEM_DADO = '—';
-
 function valoresDe(arr, key) {
   const out = [];
   for (const x of arr) {
@@ -3072,7 +2521,6 @@ function sum(arr, key) {
   const v = valoresDe(arr, key);
   return v.length ? v.reduce((s,x) => s + x, 0) : null;
 }
-// Conta apenas registros que têm o campo — denominador honesto para taxas.
 function contarCom(arr, key, pred) {
   let comDado = 0, atende = 0;
   for (const x of arr) {
@@ -3081,14 +2529,9 @@ function contarCom(arr, key, pred) {
   }
   return { comDado, atende, pct: comDado ? (atende / comDado) * 100 : null };
 }
-// Formata um número que pode ser null.
 function ouTraco(v, fn) {
   return (v === null || v === undefined || !Number.isFinite(v)) ? SEM_DADO : fn(v);
 }
-
-// ============================================
-// PERIOD FILTER
-// ============================================
 function applyPeriod(p) {
   currentPeriod = p;
   if (p === 'all') {
@@ -3097,16 +2540,10 @@ function applyPeriod(p) {
     const days = parseInt(p, 10);
     const cutoff = getLatestDataDate();
     cutoff.setDate(cutoff.getDate() - days);
-    // Registros sem data válida não entram num recorte temporal (antes eram
-    // descartados por comparação com Invalid Date, sem que isso ficasse claro).
     DATA = ALL.filter(r => dataValida(r.data) && new Date(r.data + 'T00:00:00') >= cutoff);
   }
   renderAll();
 }
-
-// ============================================
-// HEADER
-// ============================================
 function renderHeader() {
   const dates = DATA.map(r => r.data).filter(Boolean).sort();
   const rangeEl = document.getElementById('dateRange');
@@ -3127,9 +2564,6 @@ function renderHeader() {
     recordInfoEl.textContent = `${fmt.num(DATA.length)} registros visíveis`;
   }
 }
-
-// Registros que existem na base mas não aparecem no mapa por não terem
-// coordenada. Antes sumiam silenciosamente e o mapa parecia completo.
 function renderAvisoCobertura() {
   const el = document.getElementById('avisoCobertura');
   if (!el) return;
@@ -3141,12 +2575,6 @@ function renderAvisoCobertura() {
   const pct = ((semCoord / DATA.length) * 100).toFixed(1);
   el.innerHTML = `<span class="aviso-ico">!</span> <strong>${semCoord}</strong> de ${DATA.length} registros (${pct}%) não têm coordenada e não aparecem no mapa.`;
 }
-
-// ============================================
-// OVERVIEW: KPIs
-// ============================================
-// Registros da janela imediatamente anterior à atual, de mesma duração.
-// Base real para comparar tendência — antes isso era Math.random().
 function janelaAnterior() {
   if (currentPeriod === 'all') return [];
   const dias = parseInt(currentPeriod, 10);
@@ -3160,10 +2588,6 @@ function janelaAnterior() {
     return d >= inicioAnterior && d < inicioAtual;
   });
 }
-
-// Preenche um chip de tendência a partir de dois valores reais.
-// maiorEhPior=false inverte a cor (para métricas em que subir é bom).
-// A classe define a cor: .up = vermelho, .down = verde, .flat = neutro.
 function setTrend(elId, atual, anterior, { maiorEhPior = true } = {}) {
   const el = document.getElementById(elId);
   if (!el) return;
@@ -3181,26 +2605,20 @@ function setTrend(elId, atual, anterior, { maiorEhPior = true } = {}) {
   else el.classList.add((subiu === maiorEhPior) ? 'up' : 'down');
   el.textContent = `${subiu ? '↑' : '↓'} ${Math.abs(delta).toFixed(1)}% vs período ant.`;
 }
-
 function renderKPIs() {
   const ant = janelaAnterior();
-
   document.getElementById('kpiTotal').innerHTML = fmt.num(DATA.length);
   document.getElementById('kpiTotalFoot').textContent = `Total de socorros registrados`;
-
-  // Custo — só existe se a coluna estiver preenchida na planilha.
   const totalCost = sum(DATA, 'custo_estimado');
   document.getElementById('kpiCost').innerHTML = totalCost === null
     ? `${SEM_DADO}<span class="unit">R$</span>`
     : `${fmt.curr(totalCost/1000)}<span class="unit">k</span>`;
   setTrend('kpiCostTrend', totalCost, sum(ant, 'custo_estimado'));
-
   const respMed = avg(DATA, 'tempo_resposta_min');
   document.getElementById('kpiResp').innerHTML = respMed === null
     ? `${SEM_DADO}<span class="unit">min</span>`
     : `${respMed.toFixed(0)}<span class="unit">min</span>`;
   setTrend('kpiRespTrend', respMed, avg(ant, 'tempo_resposta_min'));
-
   const veiculos = groupBy(DATA, 'veiculo');
   const kpiRisk = document.getElementById('kpiRisk');
   if (temDados(DATA, 'health_score')) {
@@ -3212,21 +2630,13 @@ function renderKPIs() {
   } else {
     kpiRisk.innerHTML = SEM_DADO;
   }
-
   const crit = DATA.filter(r => r.gravidade === 'Crítica').length;
   document.getElementById('kpiCrit').innerHTML = DATA.length
     ? `${((crit/DATA.length)*100).toFixed(1)}<span class="unit">%</span>`
     : `${SEM_DADO}<span class="unit">%</span>`;
-
-  // Hero strip
   document.getElementById('heroFleet').textContent = Object.keys(veiculos).length;
-
-  // "Disponibilidade" era 96 - Math.random()*3. A planilha não tem horas de frota
-  // parada nem tamanho total da frota, então o número é substituído por uma
-  // contagem que os dados sustentam.
   const criticos = DATA.filter(r => r.gravidade === 'Crítica' || r.gravidade === 'Alta').length;
   document.getElementById('heroAvail').textContent = fmt.num(criticos);
-
   const heroSummary = document.getElementById('heroSummary');
   if (heroSummary) {
     const municipios = new Set(DATA.map(r => r.cidade).filter(Boolean)).size;
@@ -3234,22 +2644,13 @@ function renderKPIs() {
     heroSummary.innerHTML = `Frota monitorada através de <em>${fmt.num(DATA.length)} ocorrências</em>, com cobertura sobre <em>${fmt.num(municipios)} municípios</em> e <span class="underline">${fmt.num(chassis)} tipos de chassi</span> em operação.`;
   }
 }
-
-// ============================================
-// OVERVIEW: Charts
-// ============================================
 const MESES_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-
-// Rótulo de uma chave "YYYY-MM" → "Abr/26".
 function rotuloMes(chave) {
   const [y, m] = String(chave).split('-');
   const idx = parseInt(m, 10) - 1;
   if (!MESES_PT[idx] || !y) return String(chave);
   return `${MESES_PT[idx]}/${y.slice(-2)}`;
 }
-
-// Agrupa por mês-ano ("2026-04"), NUNCA só pelo nome do mês: agrupar por
-// mes_nome fundia Abr/2025 com Abr/2026 na mesma barra.
 function porMesAno(registros) {
   const mapa = {};
   registros.forEach(r => {
@@ -3259,19 +2660,11 @@ function porMesAno(registros) {
   });
   return Object.keys(mapa).sort().map(k => ({ chave: k, rotulo: rotuloMes(k), registros: mapa[k] }));
 }
-
 function renderTimeline() {
   const meses = porMesAno(DATA);
   const labels = meses.map(m => m.rotulo);
   const counts = meses.map(m => m.registros.length);
-
-  // EIXO ÚNICO. Antes este gráfico tinha dois eixos Y — contagem à esquerda,
-  // custo em R$ à direita. Duas escalas diferentes no mesmo espaço deixam o
-  // autor escolher onde as curvas se cruzam, o que é o erro mais comum em
-  // gráficos. Custo, quando existir, merece o próprio card.
-  // Série única ⇒ sem legenda: o título do card já a nomeia.
   const custoTotal = temDados(DATA, 'custo_estimado') ? sum(DATA, 'custo_estimado') : null;
-
   if (charts.timeline) charts.timeline.destroy();
   charts.timeline = new Chart(document.getElementById('chartTimeline'), {
     type: 'bar',
@@ -3305,19 +2698,15 @@ function renderTimeline() {
       }
     }
   });
-
-  // O card anunciava "Mensal · 12m" independentemente do que existia na base.
   const meta = document.querySelector('#chartTimeline')?.closest('.card')?.querySelector('.card-meta');
   if (meta) {
     const sufixo = custoTotal === null ? '' : ` · ${fmt.curr2(custoTotal)} no período`;
     meta.textContent = meses.length ? `Mensal · ${meses.length}m${sufixo}` : 'sem dados';
   }
 }
-
 function renderSectorDonut() {
   const { labels, valores, cores, detalheOutros } = agruparComOutros(DATA, 'setor', 'setor');
   const total = valores.reduce((s, v) => s + v, 0);
-
   if (charts.sector) charts.sector.destroy();
   charts.sector = new Chart(document.getElementById('chartSector'), {
     type: 'doughnut',
@@ -3326,7 +2715,6 @@ function renderSectorDonut() {
       datasets: [{
         data: valores,
         backgroundColor: cores,
-        // Respiro de 2px na cor da superfície: fatias vizinhas nunca encostam.
         borderColor: SUPERFICIE_CARD,
         borderWidth: 2,
         hoverOffset: 6,
@@ -3340,7 +2728,6 @@ function renderSectorDonut() {
         legend: { display: true, position: 'bottom', labels: { padding: 12, boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle', font: { size: 11 } } },
         tooltip: { callbacks: {
           label: c => `${c.label}: ${c.raw} (${(c.raw / total * 100).toFixed(1)}%)`,
-          // "Outros" abre o que agregou, para não virar uma caixa-preta.
           afterLabel: c => c.label.startsWith('Outros')
             ? detalheOutros.map(([n, q]) => `  ${n}: ${q}`).join('\n') : ''
         } }
@@ -3348,7 +2735,6 @@ function renderSectorDonut() {
     }
   });
 }
-
 function renderRanking(elId, items, total) {
   const el = document.getElementById(elId);
   if (!el) return;
@@ -3370,12 +2756,6 @@ function renderRanking(elId, items, total) {
     </li>`;
   }).join('');
 }
-
-// Agrupa por chave canônica (sem acento/caixa/pontuação) e exibe a grafia mais
-// frequente. Sem isso, "Subindo temperatura" e "SUBINDO TEMPERATURA" contavam
-// como dois defeitos distintos, dividindo a contagem do mesmo problema.
-// Registros sem valor são excluídos e reportados no cabeçalho do card — antes o
-// campo vazio virava a chave "null" e chegava a liderar o ranking.
 function topNCanonico(registros, campo, n = 8) {
   const grupos = {};
   let semValor = 0;
@@ -3389,44 +2769,24 @@ function topNCanonico(registros, campo, n = 8) {
     const g = String(bruto).trim();
     grupos[k].grafias[g] = (grupos[k].grafias[g] || 0) + 1;
   });
-
   const itens = Object.values(grupos)
     .map(g => [Object.entries(g.grafias).sort((a, b) => b[1] - a[1])[0][0], g.total])
     .sort((a, b) => b[1] - a[1])
     .slice(0, n);
-
   return { itens, semValor, comValor: registros.length - semValor };
 }
-
 function renderTopRankings() {
   [['rankVehicles', 'veiculo'], ['rankDefects', 'defeito'], ['rankLines', 'linha']]
     .forEach(([elId, campo]) => {
       const { itens, semValor, comValor } = topNCanonico(DATA, campo);
-      // Denominador = registros que TÊM o campo, para o "% do total" ser honesto.
       renderRanking(elId, itens, comValor);
       const meta = document.getElementById(elId)?.closest('.card')?.querySelector('.card-meta');
       if (meta) meta.textContent = semValor ? `Top 8 · ${semValor} sem registro` : 'Top 8';
     });
 }
-
-// ——— Frota por tipo de chassi ————————————————————————————————
-// Era um treemap. Num treemap a ÁREA é o valor, e a distribuição real é muito
-// desigual: os dois maiores chassis somam 75% e os quatro menores valem 0,9% a
-// 1,3% cada. No espaço deste card (~560×320) uma fatia de 0,9% vira uma célula
-// de 40×40px, onde "O500 457 RS" mais o número não cabem — por isso os rótulos
-// das menores acabavam escondidos.
-//
-// Barras horizontais resolvem por construção: o nome fica no eixo e o número na
-// ponta da barra, legíveis em qualquer largura e com qualquer distribuição, sem
-// distorcer a magnitude (o comprimento continua sendo o valor).
-
-// Os ÚNICOS registros que ficam fora do gráfico.
 function chassiDesconhecido(v) {
   return /^NAO (INFORMADO|ENCONTRADO)$/.test(chaveCanonica(v));
 }
-
-// Plugin inline que escreve "n · x%" na ponta de cada barra. É o que garante o
-// número visível sem depender de hover.
 const rotulosNaPonta = {
   id: 'rotulosNaPonta',
   afterDatasetsDraw(chart, _args, opts) {
@@ -3445,23 +2805,18 @@ const rotulosNaPonta = {
     ctx.restore();
   }
 };
-
 function renderFrotaChassi() {
   const ctx = document.getElementById('chartChassi');
   if (!ctx) return;
   const meta = ctx.closest('.card')?.querySelector('.card-meta');
   limparAviso(ctx.parentElement);
-
   const semChassi = DATA.filter(r => !r.chassi || chassiDesconhecido(r.chassi)).length;
-
   const contagem = {};
   DATA.forEach(r => {
     if (!r.chassi || chassiDesconhecido(r.chassi)) return;
     contagem[r.chassi] = (contagem[r.chassi] || 0) + 1;
   });
-  // TODOS os chassis identificados entram: sem "Outros", sem top-N, sem corte.
   const itens = Object.entries(contagem).sort((a, b) => b[1] - a[1]);
-
   if (!itens.length) {
     if (charts.chassi) { charts.chassi.destroy(); charts.chassi = null; }
     mostrarAviso(ctx.parentElement, 'Sem chassi identificado',
@@ -3469,27 +2824,16 @@ function renderFrotaChassi() {
     if (meta) meta.textContent = 'sem dados';
     return;
   }
-
   const labels = itens.map(([n]) => n);
   const valores = itens.map(([, q]) => q);
   const totalIdent = valores.reduce((s, v) => s + v, 0);
-
-  // Na ponta da barra fica só o NÚMERO. A porcentagem sai no tooltip: ela é
-  // contexto, não o dado principal, e repetida em oito barras virava ruído.
   const textos = valores.map(v => String(v));
-
-  // Cor por posição no ranking, na rampa de um matiz só. Não é identidade —
-  // é a mesma leitura que o comprimento já dá, reforçada: a barra mais longa
-  // é a mais clara. Cores categóricas aqui seriam erradas (sugeririam que os
-  // chassis pertencem a grupos diferentes) e não haveria matizes suficientes
-  // para oito barras sem repetir.
   const cores = valores.map((_, i) => {
     const passo = itens.length === 1
       ? RAMPA_BARRAS.length - 1
       : Math.round((1 - i / (itens.length - 1)) * (RAMPA_BARRAS.length - 1));
     return RAMPA_BARRAS[passo];
   });
-
   if (charts.chassi) charts.chassi.destroy();
   charts.chassi = new Chart(ctx, {
     type: 'bar',
@@ -3507,9 +2851,9 @@ function renderFrotaChassi() {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      layout: { padding: { right: 14 } }, // folga p/ o rótulo da maior barra
+      layout: { padding: { right: 14 } }, 
       plugins: {
-        legend: { display: false },       // série única: o título do card a nomeia
+        legend: { display: false },       
         tooltip: { callbacks: {
           label: c => `${c.raw} socorro(s) · ${(c.raw / totalIdent * 100).toFixed(1)}%`
         } },
@@ -3518,8 +2862,6 @@ function renderFrotaChassi() {
       scales: {
         x: {
           beginAtZero: true,
-          // Folga para o número da ponta. Menor que antes porque o rótulo
-          // encurtou (saiu a porcentagem) — as barras ganham o espaço de volta.
           suggestedMax: Math.ceil(valores[0] * 1.09),
           grid: { color: C.rule }, border: { display: false },
           ticks: { padding: 6, precision: 0, color: C.muted },
@@ -3527,7 +2869,7 @@ function renderFrotaChassi() {
         y: {
           grid: { display: false }, border: { display: false },
           ticks: {
-            autoSkip: false,  // nenhum nome de chassi pode sumir
+            autoSkip: false,  
             color: C.paper,
             font: { family: "'JetBrains Mono', monospace", size: 11 },
           },
@@ -3536,40 +2878,29 @@ function renderFrotaChassi() {
     },
     plugins: [rotulosNaPonta],
   });
-
-  // A exclusão dos desconhecidos fica explícita, não silenciosa.
   if (meta) {
     meta.textContent = semChassi
       ? `${itens.length} tipos · ${semChassi} sem chassi identificado`
       : `${itens.length} tipos`;
   }
 }
-
-
 function renderPeriodChart() {
   const periods = ['Madrugada', 'Manhã', 'Tarde', 'Noite'];
   const reg = registroDeCor('setor', 'setor');
-
-  // Usa o MESMO registro de cor do donut: MECÂNICA é verde nos dois gráficos.
-  // Setores fora dos slots entram somados em "Outros", em vez de virarem cinza.
   const presentes = [...new Set(DATA.map(r => r.setor).filter(Boolean))];
   const principais = reg.principais.filter(s => presentes.includes(s));
   const excedentes = presentes.filter(s => !reg.temSlot(s));
-
   const datasets = principais.map(s => ({
     label: s,
     data: periods.map(p => DATA.filter(r => r.periodo === p && r.setor === s).length),
     backgroundColor: reg.cor(s),
     borderRadius: 0,
     barPercentage: 0.65,
-    // 2px da cor da superfície separam os segmentos empilhados.
     borderColor: SUPERFICIE_CARD,
     borderWidth: { top: 2, right: 0, bottom: 0, left: 0 },
   }));
-
   if (excedentes.length) {
     datasets.push({
-      // Um único excedente mantém o próprio nome (ver agruparComOutros).
       label: excedentes.length === 1 ? excedentes[0] : `Outros (${excedentes.length})`,
       data: periods.map(p => DATA.filter(r => r.periodo === p && excedentes.includes(r.setor)).length),
       backgroundColor: COR_OUTROS,
@@ -3579,7 +2910,6 @@ function renderPeriodChart() {
       borderWidth: { top: 2, right: 0, bottom: 0, left: 0 },
     });
   }
-
   if (charts.period) charts.period.destroy();
   charts.period = new Chart(document.getElementById('chartPeriod'), {
     type: 'bar',
@@ -3598,10 +2928,133 @@ function renderPeriodChart() {
     }
   });
 }
-
-// ============================================
-// MAP TAB
-// ============================================
+const MG_ANEL = [
+  [-47.6797,-18.3561],[-47.694,-18.375],[-47.737,-18.3626],[-47.7695,-18.4183],[-47.8297,-18.4113],[-47.8605,-18.4402],[-47.8646,-18.4491],[-47.8879,-18.4772],
+  [-47.9143,-18.4666],[-47.9546,-18.5],[-47.9967,-18.4535],[-48.027,-18.4361],[-48.0475,-18.4176],[-48.0941,-18.431],[-48.1465,-18.4095],[-48.1594,-18.3755],
+  [-48.2215,-18.362],[-48.2272,-18.346],[-48.2718,-18.3294],[-48.3181,-18.3671],[-48.3418,-18.3708],[-48.4,-18.3728],[-48.442,-18.3566],[-48.4695,-18.3707],
+  [-48.5156,-18.3664],[-48.5545,-18.3469],[-48.5614,-18.3239],[-48.6538,-18.3428],[-48.7423,-18.3525],[-48.7577,-18.3448],[-48.828,-18.3752],[-48.8321,-18.3461],
+  [-48.9177,-18.3059],[-48.9595,-18.3235],[-49.006,-18.3744],[-49.0296,-18.3688],[-49.0538,-18.4026],[-49.0791,-18.4167],[-49.1263,-18.3843],[-49.1593,-18.4167],
+  [-49.2108,-18.4233],[-49.2014,-18.4612],[-49.2284,-18.4792],[-49.2493,-18.5228],[-49.2856,-18.5363],[-49.2927,-18.5639],[-49.3275,-18.5622],[-49.3734,-18.6348],
+  [-49.4057,-18.6451],[-49.4862,-18.5323],[-49.4998,-18.491],[-49.5457,-18.4995],[-49.5476,-18.5396],[-49.642,-18.5552],[-49.6526,-18.5736],[-49.723,-18.6094],
+  [-49.7577,-18.6097],[-49.7946,-18.6438],[-49.8893,-18.6099],[-49.9317,-18.624],[-49.9815,-18.6046],[-50.0288,-18.6015],[-50.0502,-18.6435],[-50.0798,-18.6719],
+  [-50.1643,-18.6644],[-50.1989,-18.6791],[-50.27,-18.6842],[-50.3145,-18.7007],[-50.3523,-18.7603],[-50.3703,-18.8044],[-50.4235,-18.8327],[-50.4434,-18.8941],
+  [-50.4732,-18.9214],[-50.5119,-18.952],[-50.4951,-19.0129],[-50.5031,-19.0469],[-50.5352,-19.0989],[-50.5865,-19.1395],[-50.6457,-19.1348],[-50.6745,-19.1363],
+  [-50.6825,-19.1756],[-50.7331,-19.187],[-50.7404,-19.2132],[-50.7465,-19.2399],[-50.8171,-19.2893],[-50.828,-19.3108],[-50.8754,-19.4228],[-50.8256,-19.4733],
+  [-50.8494,-19.4981],[-50.935,-19.4675],[-50.9629,-19.5006],[-50.9309,-19.5422],[-50.9244,-19.5809],[-50.9876,-19.5895],[-51.0382,-19.6918],[-51.0461,-19.7356],
+  [-51.0279,-19.7566],[-51.0335,-19.7907],[-51.0236,-19.8039],[-51.0193,-19.8705],[-50.9995,-19.9064],[-51.0209,-19.9591],[-51.0055,-19.9961],[-51.0179,-20.0484],
+  [-51.0005,-20.0854],[-50.9691,-20.0364],[-50.9455,-20.0297],[-50.9081,-19.9943],[-50.886,-19.9904],[-50.8441,-19.9676],[-50.7836,-19.9372],[-50.6864,-19.9162],
+  [-50.6581,-19.9071],[-50.6142,-19.861],[-50.5779,-19.8164],[-50.562,-19.8136],[-50.4693,-19.7799],[-50.4541,-19.7862],[-50.4171,-19.8011],[-50.3374,-19.8695],
+  [-50.2452,-19.8768],[-50.2157,-19.8666],[-50.1718,-19.8755],[-50.1062,-19.8743],[-50.0441,-19.9164],[-50.0031,-19.9264],[-49.9699,-19.92],[-49.9062,-19.9372],
+  [-49.8537,-19.9465],[-49.8353,-19.9333],[-49.7494,-19.9247],[-49.6344,-19.9319],[-49.6132,-19.92],[-49.5515,-19.9058],[-49.514,-19.9143],[-49.4928,-19.9504],
+  [-49.4538,-19.9781],[-49.3565,-19.9867],[-49.2975,-19.9605],[-49.2501,-19.9693],[-49.2483,-19.9996],[-49.2973,-20.0175],[-49.3073,-20.0603],[-49.3059,-20.1169],
+  [-49.2992,-20.1671],[-49.2652,-20.2297],[-49.2597,-20.2588],[-49.2253,-20.3053],[-49.1836,-20.3147],[-49.1207,-20.2705],[-49.0659,-20.1535],[-49.0329,-20.1501],
+  [-48.986,-20.1708],[-48.972,-20.2078],[-48.9658,-20.2793],[-48.963,-20.4031],[-48.9042,-20.4387],[-48.8865,-20.4369],[-48.8671,-20.3989],[-48.8784,-20.3561],
+  [-48.8755,-20.3184],[-48.8871,-20.2753],[-48.8534,-20.215],[-48.8554,-20.1801],[-48.8221,-20.1615],[-48.7811,-20.1639],[-48.7296,-20.1503],[-48.6469,-20.167],
+  [-48.5932,-20.1358],[-48.5374,-20.1336],[-48.4911,-20.1381],[-48.4516,-20.1259],[-48.4058,-20.1135],[-48.3749,-20.1231],[-48.3154,-20.1138],[-48.2651,-20.1438],
+  [-48.2186,-20.1279],[-48.2534,-20.0779],[-48.2285,-20.0282],[-48.2034,-20.0455],[-48.1786,-20.0962],[-48.1055,-20.1464],[-48.0768,-20.1484],[-48.0202,-20.124],
+  [-48.0011,-20.1013],[-47.9812,-20.0364],[-47.946,-20.0605],[-47.9315,-20.1104],[-47.8994,-20.1257],[-47.8698,-20.0762],[-47.8615,-20.045],[-47.8752,-20.0186],
+  [-47.8509,-19.9898],[-47.7626,-19.986],[-47.7127,-19.9781],[-47.6761,-20.0019],[-47.6397,-20.0472],[-47.5947,-20.0259],[-47.5838,-19.9967],[-47.5492,-19.9938],
+  [-47.4896,-19.9693],[-47.4633,-19.9658],[-47.4244,-20.0153],[-47.4403,-20.0488],[-47.4081,-20.0802],[-47.3716,-20.0859],[-47.3292,-20.1153],[-47.2964,-20.1459],
+  [-47.2618,-20.1599],[-47.2311,-20.2192],[-47.2326,-20.2275],[-47.2767,-20.2916],[-47.2982,-20.3484],[-47.2855,-20.4057],[-47.2935,-20.4187],[-47.291,-20.4505],
+  [-47.2235,-20.4911],[-47.1545,-20.5196],[-47.1442,-20.5408],[-47.1377,-20.5611],[-47.1428,-20.5656],[-47.1233,-20.6127],[-47.0975,-20.6439],[-47.101,-20.682],
+  [-47.1267,-20.7093],[-47.1692,-20.7034],[-47.1862,-20.7314],[-47.1888,-20.7706],[-47.2249,-20.8009],[-47.2145,-20.8272],[-47.2269,-20.8555],[-47.2274,-20.8565],
+  [-47.24,-20.8853],[-47.1813,-20.9538],[-47.1437,-20.9824],[-47.1479,-21.0355],[-47.1413,-21.0859],[-47.1148,-21.1047],[-47.133,-21.1332],[-47.1176,-21.1532],
+  [-47.1185,-21.1859],[-47.0761,-21.2412],[-47.0442,-21.2674],[-47.0165,-21.3424],[-46.9967,-21.3573],[-47.013,-21.4191],[-46.9329,-21.425],[-46.8846,-21.4072],
+  [-46.8421,-21.3891],[-46.8361,-21.3707],[-46.7815,-21.3707],[-46.7647,-21.3601],[-46.739,-21.3926],[-46.6755,-21.3751],[-46.6476,-21.3796],[-46.6161,-21.4303],
+  [-46.5765,-21.427],[-46.5191,-21.449],[-46.5089,-21.4891],[-46.523,-21.5299],[-46.5118,-21.5654],[-46.5547,-21.6534],[-46.5646,-21.6787],[-46.6145,-21.6765],
+  [-46.6307,-21.7686],[-46.6907,-21.8376],[-46.666,-21.8484],[-46.6475,-21.8805],[-46.6738,-21.9111],[-46.6428,-21.9766],[-46.6179,-21.995],[-46.6499,-22.0095],
+  [-46.6854,-22.0374],[-46.6648,-22.0689],[-46.7195,-22.0833],[-46.7001,-22.0951],[-46.6468,-22.0919],[-46.6242,-22.1085],[-46.613,-22.1503],[-46.6456,-22.1806],
+  [-46.6718,-22.1783],[-46.6803,-22.2165],[-46.7069,-22.2579],[-46.7233,-22.3066],[-46.6609,-22.366],[-46.6665,-22.4151],[-46.6163,-22.4386],[-46.5548,-22.4466],
+  [-46.5499,-22.4695],[-46.5421,-22.4944],[-46.4565,-22.5217],[-46.4146,-22.5579],[-46.4243,-22.5994],[-46.3931,-22.663],[-46.4691,-22.6732],[-46.4731,-22.705],
+  [-46.4527,-22.7276],[-46.3728,-22.7468],[-46.3326,-22.7661],[-46.3617,-22.7889],[-46.3745,-22.8202],[-46.3763,-22.8771],[-46.3449,-22.9052],[-46.279,-22.8783],
+  [-46.2574,-22.8909],[-46.1922,-22.8652],[-46.1413,-22.8681],[-46.1391,-22.9228],[-46.0952,-22.8944],[-46.0507,-22.897],[-46.0085,-22.8895],[-45.9565,-22.8498],
+  [-45.909,-22.8296],[-45.871,-22.8715],[-45.8481,-22.8378],[-45.768,-22.836],[-45.7709,-22.8059],[-45.7122,-22.7698],[-45.7326,-22.722],[-45.8051,-22.7373],
+  [-45.8116,-22.6987],[-45.7879,-22.6934],[-45.7428,-22.6592],[-45.698,-22.6498],[-45.73,-22.6187],[-45.7268,-22.587],[-45.6787,-22.5733],[-45.6599,-22.599],
+  [-45.6811,-22.6363],[-45.6662,-22.6512],[-45.6181,-22.6379],[-45.5765,-22.6017],[-45.5599,-22.6276],[-45.5804,-22.6529],[-45.5249,-22.6469],[-45.4888,-22.6288],
+  [-45.4804,-22.5905],[-45.4204,-22.6212],[-45.4,-22.6537],[-45.333,-22.6176],[-45.2691,-22.6114],[-45.2545,-22.5816],[-45.1772,-22.5467],[-45.1668,-22.5307],
+  [-45.1244,-22.4972],[-45.1028,-22.4899],[-45.0549,-22.4705],[-44.9907,-22.4665],[-44.9659,-22.4752],[-44.9396,-22.4526],[-44.8897,-22.4321],[-44.8439,-22.4278],
+  [-44.8094,-22.4056],[-44.8094,-22.4043],[-44.8035,-22.3937],[-44.7296,-22.3608],[-44.6659,-22.3727],[-44.6619,-22.3805],[-44.5926,-22.3229],[-44.5437,-22.3323],
+  [-44.4969,-22.3037],[-44.4332,-22.2514],[-44.3596,-22.254],[-44.3172,-22.2595],[-44.2915,-22.2431],[-44.2599,-22.268],[-44.1892,-22.2404],[-44.1794,-22.2285],
+  [-44.1544,-22.2272],[-44.1013,-22.1737],[-44.0335,-22.1523],[-43.9771,-22.1464],[-43.8416,-22.0991],[-43.7765,-22.066],[-43.7314,-22.0962],[-43.7089,-22.0758],
+  [-43.6684,-22.0861],[-43.6457,-22.0649],[-43.6212,-22.0833],[-43.5914,-22.0558],[-43.5661,-22.0875],[-43.5257,-22.0727],[-43.4645,-22.0728],[-43.437,-22.06],
+  [-43.3467,-22.0038],[-43.3266,-22.0078],[-43.2342,-22.0142],[-43.2277,-22.0288],[-43.202,-22.0375],[-43.1696,-22.0218],[-43.1312,-22.0292],[-43.1306,-22.035],
+  [-43.1532,-22.0744],[-43.1423,-22.1044],[-43.1062,-22.0827],[-43.0755,-22.0929],[-43.0332,-22.0659],[-43.0022,-22.0328],[-42.9096,-21.9907],[-42.8814,-21.9593],
+  [-42.7878,-21.9296],[-42.6653,-21.8733],[-42.606,-21.8464],[-42.4632,-21.7862],[-42.4597,-21.7848],[-42.3777,-21.7484],[-42.3335,-21.7458],[-42.2666,-21.7145],
+  [-42.2733,-21.6779],[-42.3017,-21.655],[-42.3397,-21.6603],[-42.3652,-21.6465],[-42.3527,-21.5917],[-42.346,-21.5827],[-42.2856,-21.5281],[-42.2574,-21.4823],
+  [-42.2921,-21.4592],[-42.2754,-21.4275],[-42.2782,-21.414],[-42.23,-21.3665],[-42.2356,-21.3429],[-42.2242,-21.3378],[-42.2378,-21.318],[-42.2287,-21.2825],
+  [-42.1897,-21.2505],[-42.2026,-21.2212],[-42.2083,-21.179],[-42.1953,-21.1603],[-42.1745,-21.1318],[-42.1185,-21.0748],[-42.0801,-21.0302],[-42.0848,-21.023],
+  [-42.141,-20.993],[-42.1509,-20.974],[-42.138,-20.96],[-42.0385,-20.9275],[-41.9786,-20.9349],[-41.9602,-20.883],[-41.9297,-20.8436],[-41.9282,-20.794],
+  [-41.905,-20.7974],[-41.8747,-20.7659],[-41.8507,-20.6912],[-41.8132,-20.6533],[-41.8413,-20.6004],[-41.8284,-20.5573],[-41.8043,-20.5384],[-41.8254,-20.4833],
+  [-41.7995,-20.477],[-41.8034,-20.4222],[-41.8366,-20.4091],[-41.8595,-20.3729],[-41.8221,-20.3109],[-41.7821,-20.2945],[-41.775,-20.2601],[-41.7568,-20.2069],
+  [-41.666,-20.207],[-41.4156,-20.2074],[-41.4119,-20.2061],[-41.3824,-20.1891],[-41.3558,-20.1391],[-41.3327,-20.0577],[-41.3091,-20.0164],[-41.3118,-19.9724],
+  [-41.2979,-19.9376],[-41.2714,-19.9422],[-41.2445,-19.9373],[-41.2296,-19.907],[-41.187,-19.8915],[-41.184,-19.8488],[-41.1641,-19.8064],[-41.1746,-19.7672],
+  [-41.1911,-19.7459],[-41.1743,-19.7156],[-41.1685,-19.6722],[-41.1086,-19.6395],[-41.0993,-19.6042],[-41.0369,-19.5705],[-41.0409,-19.5159],[-40.9883,-19.5079],
+  [-40.9447,-19.461],[-40.9664,-19.4236],[-40.9304,-19.3842],[-40.9385,-19.3461],[-40.9245,-19.3025],[-40.9445,-19.2795],[-40.9323,-19.2512],[-40.9354,-19.2227],
+  [-40.9411,-19.1806],[-40.9643,-19.1221],[-41.0071,-19.1005],[-41.0126,-19.0758],[-41.0608,-19.0565],[-41.0716,-19.0256],[-41.0322,-18.9908],[-41.065,-18.9448],
+  [-41.1037,-18.9341],[-41.1371,-18.8906],[-41.1664,-18.8582],[-41.2148,-18.8776],[-41.2432,-18.8538],[-41.2324,-18.7973],[-41.1468,-18.798],[-41.1105,-18.8389],
+  [-41.0254,-18.8372],[-40.9639,-18.8412],[-40.9168,-18.8155],[-40.94,-18.7703],[-40.9415,-18.6907],[-41.0052,-18.6673],[-41.0509,-18.6342],[-41.0258,-18.5276],
+  [-41.023,-18.4573],[-41.1818,-18.4396],[-41.1442,-18.4053],[-41.1589,-18.3082],[-41.0965,-18.2556],[-41.1039,-18.2125],[-41.0519,-18.1651],[-41.0146,-18.1576],
+  [-40.9093,-18.1148],[-40.8785,-18.12],[-40.8451,-18.1498],[-40.7715,-18.1559],[-40.7733,-18.1076],[-40.9024,-17.9862],[-40.8628,-17.9881],[-40.8306,-17.9542],
+  [-40.7985,-17.9569],[-40.7528,-18.0096],[-40.7258,-18.0012],[-40.7037,-18.0237],[-40.662,-18.0127],[-40.6262,-17.9911],[-40.6095,-17.9377],[-40.5168,-17.8944],
+  [-40.4627,-17.9282],[-40.3684,-17.9229],[-40.3455,-17.9238],[-40.2554,-17.9718],[-40.2224,-17.9804],[-40.2268,-17.9583],[-40.2635,-17.922],[-40.2119,-17.8949],
+  [-40.1741,-17.8516],[-40.2181,-17.7957],[-40.2237,-17.7343],[-40.2402,-17.7349],[-40.2727,-17.7274],[-40.299,-17.6746],[-40.3228,-17.6613],[-40.3441,-17.6156],
+  [-40.4182,-17.5991],[-40.4138,-17.5742],[-40.4592,-17.5695],[-40.4891,-17.5198],[-40.483,-17.4885],[-40.5195,-17.4474],[-40.5975,-17.4206],[-40.6047,-17.3562],
+  [-40.5948,-17.3236],[-40.5478,-17.2837],[-40.5713,-17.253],[-40.5539,-17.189],[-40.5787,-17.1496],[-40.5568,-17.0896],[-40.5717,-17.0659],[-40.5435,-16.9828],
+  [-40.5159,-16.9627],[-40.4802,-16.8768],[-40.4336,-16.8874],[-40.4077,-16.8987],[-40.4013,-16.8902],[-40.3649,-16.8746],[-40.3315,-16.908],[-40.2816,-16.9012],
+  [-40.2508,-16.8312],[-40.2691,-16.7958],[-40.3236,-16.8013],[-40.3329,-16.7695],[-40.3098,-16.7333],[-40.307,-16.6968],[-40.3132,-16.6786],[-40.2755,-16.5734],
+  [-40.2298,-16.5614],[-40.1729,-16.5774],[-40.1545,-16.5603],[-40.1704,-16.5248],[-40.1102,-16.4493],[-40.0658,-16.4575],[-40.0172,-16.3478],[-39.9901,-16.3122],
+  [-39.9178,-16.2843],[-39.9357,-16.2439],[-39.8834,-16.1947],[-39.8843,-16.1449],[-39.8568,-16.1138],[-39.8839,-16.066],[-39.9222,-16.0286],[-39.9148,-16],
+  [-39.9576,-15.992],[-40.0044,-16.0018],[-40.0458,-15.9624],[-40.0665,-15.9592],[-40.0748,-15.9201],[-40.1275,-15.9071],[-40.1598,-15.9085],[-40.174,-15.8705],
+  [-40.2069,-15.8545],[-40.2357,-15.8035],[-40.2944,-15.8166],[-40.378,-15.8184],[-40.425,-15.8057],[-40.45,-15.7616],[-40.5198,-15.7976],[-40.5611,-15.8036],
+  [-40.626,-15.7182],[-40.6449,-15.7289],[-40.6814,-15.6997],[-40.7006,-15.6673],[-40.7438,-15.684],[-40.7803,-15.6802],[-40.8168,-15.6476],[-40.8414,-15.6825],
+  [-40.9026,-15.6918],[-40.9143,-15.661],[-40.9631,-15.6484],[-40.9781,-15.6881],[-41.0061,-15.7138],[-41.0787,-15.7199],[-41.1216,-15.743],[-41.1425,-15.772],
+  [-41.2154,-15.7372],[-41.2686,-15.7487],[-41.3302,-15.7433],[-41.3422,-15.6386],[-41.3564,-15.5003],[-41.3619,-15.495],[-41.3643,-15.493],[-41.4561,-15.4103],
+  [-41.7599,-15.138],[-41.8023,-15.1003],[-41.8103,-15.1014],[-41.8725,-15.1165],[-41.897,-15.1519],[-41.9534,-15.1757],[-41.9947,-15.1589],[-42.0485,-15.1707],
+  [-42.0961,-15.1824],[-42.1554,-15.0979],[-42.2231,-15.0996],[-42.2656,-15.125],[-42.2776,-15.1137],[-42.3237,-15.0936],[-42.3549,-15.0982],[-42.3719,-15.0736],
+  [-42.4011,-15.0772],[-42.4429,-15.0613],[-42.4436,-15.0206],[-42.479,-15.0142],[-42.5157,-14.9829],[-42.5607,-14.9623],[-42.5856,-14.9316],[-42.6187,-14.9397],
+  [-42.6486,-14.93],[-42.7069,-14.8812],[-42.7472,-14.8678],[-42.7551,-14.8464],[-42.7955,-14.8373],[-42.8724,-14.7754],[-42.8721,-14.7647],[-42.9112,-14.7457],
+  [-42.9527,-14.7084],[-43.0109,-14.7017],[-43.0367,-14.6831],[-43.0915,-14.6833],[-43.175,-14.6511],[-43.2451,-14.6565],[-43.4242,-14.7201],[-43.4613,-14.7462],
+  [-43.487,-14.7903],[-43.5308,-14.8155],[-43.531,-14.8154],[-43.5416,-14.7791],[-43.5863,-14.7501],[-43.615,-14.7599],[-43.7122,-14.7153],[-43.8469,-14.6721],
+  [-43.8746,-14.6368],[-43.8812,-14.5624],[-43.8703,-14.5131],[-43.832,-14.443],[-43.8184,-14.3877],[-43.7832,-14.3392],[-43.8284,-14.3157],[-43.8809,-14.3118],
+  [-43.8973,-14.299],[-43.9619,-14.291],[-43.9966,-14.2657],[-44.0457,-14.2838],[-44.1073,-14.2591],[-44.1704,-14.2687],[-44.2091,-14.2467],[-44.296,-14.2532],
+  [-44.3406,-14.2494],[-44.3616,-14.2728],[-44.4118,-14.2816],[-44.4883,-14.3286],[-44.5108,-14.3227],[-44.5661,-14.3414],[-44.5992,-14.3681],[-44.6589,-14.3958],
+  [-44.7414,-14.4671],[-44.8108,-14.5031],[-44.8692,-14.5934],[-44.981,-14.6456],[-44.9957,-14.6678],[-45.0477,-14.6905],[-45.0651,-14.7309],[-45.0958,-14.753],
+  [-45.1665,-14.7353],[-45.2056,-14.7447],[-45.243,-14.7864],[-45.3057,-14.8337],[-45.364,-14.8717],[-45.3689,-14.8904],[-45.4103,-14.9234],[-45.4352,-14.9226],
+  [-45.4553,-14.9491],[-45.4901,-14.9608],[-45.5361,-14.9381],[-45.5943,-14.9785],[-45.6169,-15.0141],[-45.65,-15.0238],[-45.6732,-15.0778],[-45.7398,-15.1204],
+  [-45.8117,-15.1128],[-45.8722,-15.1588],[-45.9187,-15.1334],[-45.9606,-15.1439],[-45.9845,-15.196],[-46.0295,-15.2018],[-46.0581,-15.2627],[-46.0971,-15.2431],
+  [-46.1165,-15.2048],[-46.0478,-15.1637],[-46.0437,-15.1181],[-45.975,-15.0369],[-45.9661,-14.9656],[-46.0039,-14.9023],[-46.0376,-14.8747],[-46.0394,-14.8753],
+  [-46.0881,-14.9364],[-46.1191,-14.9206],[-46.1721,-14.9473],[-46.2322,-14.9223],[-46.2869,-14.9281],[-46.3193,-14.9004],[-46.3005,-14.8581],[-46.3251,-14.8456],
+  [-46.3222,-14.8146],[-46.4238,-14.756],[-46.4749,-14.7052],[-46.5034,-14.7041],[-46.5103,-14.7383],[-46.5442,-14.753],[-46.5638,-14.7834],[-46.5605,-14.815],
+  [-46.5216,-14.8512],[-46.5399,-14.8919],[-46.5408,-14.9516],[-46.5181,-14.9705],[-46.5308,-15.0053],[-46.5027,-15.0509],[-46.5261,-15.0564],[-46.5775,-15.0841],
+  [-46.6254,-15.0895],[-46.6817,-15.0586],[-46.7859,-15.0184],[-46.8569,-15.0103],[-46.9251,-15.0575],[-46.926,-15.0736],[-46.8883,-15.1125],[-46.9373,-15.205],
+  [-46.9277,-15.2551],[-46.8915,-15.2353],[-46.8737,-15.2854],[-46.8359,-15.3265],[-46.8495,-15.3732],[-46.9119,-15.4115],[-46.9305,-15.4431],[-46.9461,-15.5633],
+  [-46.8826,-15.6101],[-46.8549,-15.6183],[-46.8558,-15.6818],[-46.8278,-15.7287],[-46.8131,-15.7872],[-46.8232,-15.8246],[-46.8062,-15.8706],[-46.8249,-15.8857],
+  [-46.9525,-15.9166],[-47.0565,-15.9378],[-47.1067,-15.9583],[-47.1366,-15.9274],[-47.2094,-15.9901],[-47.2264,-16.016],[-47.2869,-16.0093],[-47.31,-16.0363],
+  [-47.3085,-16.05],[-47.3126,-16.0888],[-47.3523,-16.1338],[-47.3226,-16.2091],[-47.322,-16.2314],[-47.3516,-16.2754],[-47.3655,-16.3299],[-47.4272,-16.3989],
+  [-47.4289,-16.437],[-47.455,-16.466],[-47.4595,-16.5041],[-47.431,-16.549],[-47.3738,-16.5932],[-47.3473,-16.5908],[-47.2877,-16.6423],[-47.2518,-16.6645],
+  [-47.2462,-16.7005],[-47.2257,-16.7205],[-47.2365,-16.7553],[-47.2197,-16.7781],[-47.2064,-16.8384],[-47.2084,-16.8747],[-47.1807,-16.9018],[-47.1545,-16.9529],
+  [-47.1295,-16.9752],[-47.1466,-17.0323],[-47.1781,-17.0408],[-47.1981,-17.0723],[-47.2252,-17.0775],[-47.2775,-17.111],[-47.2931,-17.1394],[-47.3485,-17.1762],
+  [-47.3842,-17.2478],[-47.4111,-17.2492],[-47.4379,-17.3179],[-47.4868,-17.3495],[-47.5108,-17.3261],[-47.5246,-17.4119],[-47.5366,-17.4571],[-47.5133,-17.4632],
+  [-47.5089,-17.5012],[-47.4669,-17.534],[-47.4004,-17.5118],[-47.3747,-17.5235],[-47.3254,-17.5238],[-47.3131,-17.5434],[-47.2648,-17.6114],[-47.279,-17.6427],
+  [-47.2725,-17.674],[-47.314,-17.6998],[-47.317,-17.7252],[-47.3547,-17.8151],[-47.3567,-17.8941],[-47.3418,-17.9002],[-47.323,-17.9835],[-47.2834,-18.0408],
+  [-47.3243,-18.0698],[-47.37,-18.116],[-47.4079,-18.1419],[-47.4298,-18.1652],[-47.4511,-18.1595],[-47.497,-18.199],[-47.5395,-18.2169],[-47.5675,-18.2111],
+  [-47.607,-18.2462],[-47.6328,-18.2916],[-47.6102,-18.3157],[-47.6797,-18.3561]
+];
+const MG_BOUNDS = [[-51.0461, -22.9228], [-39.8568, -14.2467]];
+const MG_MASCARA = {
+  type: 'Feature', properties: {},
+  geometry: {
+    type: 'Polygon',
+    coordinates: [
+      [[-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85]],
+      MG_ANEL,
+    ],
+  },
+};
+const MG_AREA = {
+  type: 'Feature', properties: {},
+  geometry: { type: 'Polygon', coordinates: [MG_ANEL] },
+};
 function initMap() {
   if (map) return;
   if (!TEM_MAPLIBRE) {
@@ -3615,31 +3068,48 @@ function initMap() {
     }
     return;
   }
-
   map = new maplibregl.Map({
     container: 'map',
     style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-    center: [-43.95, -20.0],
-    zoom: 8,
+    bounds: MG_BOUNDS,
+    fitBoundsOptions: { padding: 24 },
     attributionControl: true
   });
-
-  // Controles de zoom e bússola no canto superior direito
   map.addControl(new maplibregl.NavigationControl({
     showCompass: true,
     showZoom: true
   }), 'top-right');
-
   map.on('load', () => {
     mapLoaded = true;
-
-    // Fonte de dados bruta (para marcadores padrão e mapa de calor)
+    map.addSource('mg-mascara', { type: 'geojson', data: MG_MASCARA });
+    map.addSource('mg-area', { type: 'geojson', data: MG_AREA });
+    map.addLayer({
+      id: 'mg-mascara',
+      type: 'fill',
+      source: 'mg-mascara',
+      paint: { 'fill-color': '#0A1410', 'fill-opacity': 0.74 }
+    });
+    map.addLayer({
+      id: 'mg-area',
+      type: 'fill',
+      source: 'mg-area',
+      paint: { 'fill-color': PALETA_CATEGORICA[0], 'fill-opacity': 0.07 }
+    });
+    map.addLayer({
+      id: 'mg-contorno',
+      type: 'line',
+      source: 'mg-area',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: {
+        'line-color': PALETA_CATEGORICA[0],
+        'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1.2, 9, 2, 13, 3],
+        'line-opacity': 0.85
+      }
+    });
     map.addSource('failures-raw', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] }
     });
-
-    // Fonte de dados agrupada (para modo cluster)
     map.addSource('failures-clustered', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
@@ -3647,8 +3117,6 @@ function initMap() {
       clusterMaxZoom: 14,
       clusterRadius: 50
     });
-
-    // Camada de Mapa de Calor (Heatmap)
     map.addLayer({
       id: 'heatmap-layer',
       type: 'heatmap',
@@ -3690,7 +3158,6 @@ function initMap() {
         'heatmap-opacity': 0.85
       }
     });
-
     const colorExpr = [
       'match',
       ['get', 'gravidade'],
@@ -3700,7 +3167,6 @@ function initMap() {
       'Baixa', GRAV_COLORS['Baixa'],
       COR_OUTROS
     ];
-
     const radiusExpr = [
       'match',
       ['get', 'gravidade'],
@@ -3708,8 +3174,6 @@ function initMap() {
       'Alta', 6,
       5
     ];
-
-    // Camada de Marcadores Normais (Sem Cluster)
     map.addLayer({
       id: 'markers-layer',
       type: 'circle',
@@ -3722,8 +3186,6 @@ function initMap() {
         'circle-opacity': 0.85
       }
     });
-
-    // Camada de Círculos dos Clusters
     map.addLayer({
       id: 'clusters-circle',
       type: 'circle',
@@ -3742,8 +3204,6 @@ function initMap() {
         ]
       }
     });
-
-    // Camada de Textos dos Clusters (Contadores)
     map.addLayer({
       id: 'clusters-label',
       type: 'symbol',
@@ -3758,8 +3218,6 @@ function initMap() {
         'text-color': '#ffffff'
       }
     });
-
-    // Camada de Círculos não agrupados dentro do modo Cluster
     map.addLayer({
       id: 'unclustered-circle',
       type: 'circle',
@@ -3773,18 +3231,14 @@ function initMap() {
         'circle-opacity': 0.85
       }
     });
-
     setupMapEvents();
     renderMapData();
   });
-
-  // Preencher seletor de setor (dinâmico)
   updateMapSetorDropdown();
   const sel = document.getElementById('mapSetor');
   const aoFiltrar = () => { renderMapData(); renderMapaLegenda(); };
   sel.addEventListener('change', aoFiltrar);
   document.getElementById('mapGravidade').addEventListener('change', aoFiltrar);
-
   document.querySelectorAll('.map-toggle[data-layer]').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.map-toggle[data-layer]').forEach(x => x.classList.remove('active'));
@@ -3795,7 +3249,6 @@ function initMap() {
     });
   });
 }
-
 function updateMapSetorDropdown() {
   const sel = document.getElementById('mapSetor');
   if (!sel) return;
@@ -3803,9 +3256,8 @@ function updateMapSetorDropdown() {
   const setores = [...new Set(ALL.map(r => r.setor).filter(Boolean))].sort();
   sel.innerHTML = '<option value="">Todos os setores</option>' +
     setores.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
-  if (prev) sel.value = prev; // mantém a seleção anterior se possível
+  if (prev) sel.value = prev; 
 }
-
 function getMapFiltered() {
   const setor = document.getElementById('mapSetor').value;
   const grav = document.getElementById('mapGravidade').value;
@@ -3816,7 +3268,6 @@ function getMapFiltered() {
     Number.isFinite(r.lng) && r.lng !== 0
   );
 }
-
 function buildPopup(r) {
   const custo = (typeof r.custo_estimado === 'number' && Number.isFinite(r.custo_estimado))
     ? fmt.curr2(r.custo_estimado) : SEM_DADO;
@@ -3831,12 +3282,10 @@ function buildPopup(r) {
     <div class="popup-row"><span class="popup-label">Custo est.</span><span class="popup-val">${custo}</span></div>
   `;
 }
-
 function setupMapEvents() {
   const showPopup = (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
     const properties = e.features[0].properties;
-    
     const custoBruto = Number(properties.custo_estimado);
     const r = {
       ...properties,
@@ -3844,20 +3293,16 @@ function setupMapEvents() {
       data: properties.data,
       horario: properties.horario || ''
     };
-
     while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
-
     new maplibregl.Popup()
       .setLngLat(coordinates)
       .setHTML(buildPopup(r))
       .addTo(map);
   };
-
   map.on('click', 'markers-layer', showPopup);
   map.on('click', 'unclustered-circle', showPopup);
-
   map.on('click', 'clusters-circle', async (e) => {
     const features = map.queryRenderedFeatures(e.point, {
       layers: ['clusters-circle']
@@ -3865,16 +3310,13 @@ function setupMapEvents() {
     const clusterId = features[0].properties.cluster_id;
     const source = map.getSource('failures-clustered');
     const zoom = await source.getClusterExpansionZoom(clusterId);
-    
     map.easeTo({
       center: features[0].geometry.coordinates,
       zoom: zoom
     });
   });
-
   const setPointer = () => { map.getCanvas().style.cursor = 'pointer'; };
   const resetPointer = () => { map.getCanvas().style.cursor = ''; };
-
   map.on('mouseenter', 'markers-layer', setPointer);
   map.on('mouseleave', 'markers-layer', resetPointer);
   map.on('mouseenter', 'unclustered-circle', setPointer);
@@ -3882,16 +3324,13 @@ function setupMapEvents() {
   map.on('mouseenter', 'clusters-circle', setPointer);
   map.on('mouseleave', 'clusters-circle', resetPointer);
 }
-
 function renderMapData() {
   if (!map) {
     initMap();
     return;
   }
   if (!mapLoaded) return;
-
   const records = getMapFiltered();
-
   const features = records.map(r => ({
     type: 'Feature',
     geometry: {
@@ -3902,31 +3341,25 @@ function renderMapData() {
       ...r
     }
   }));
-
   const geojson = {
     type: 'FeatureCollection',
     features: features
   };
-
   if (map.getSource('failures-raw')) {
     map.getSource('failures-raw').setData(geojson);
   }
   if (map.getSource('failures-clustered')) {
     map.getSource('failures-clustered').setData(geojson);
   }
-
   const isHeat = currentMapLayer === 'heat';
   const isCluster = currentMapLayer === 'cluster';
   const isMarkers = currentMapLayer === 'markers' || !currentMapLayer;
-
   map.setLayoutProperty('heatmap-layer', 'visibility', isHeat ? 'visible' : 'none');
   map.setLayoutProperty('markers-layer', 'visibility', isMarkers ? 'visible' : 'none');
   map.setLayoutProperty('clusters-circle', 'visibility', isCluster ? 'visible' : 'none');
   map.setLayoutProperty('clusters-label', 'visibility', isCluster ? 'visible' : 'none');
   map.setLayoutProperty('unclustered-circle', 'visibility', isCluster ? 'visible' : 'none');
 }
-
-// Legenda de gravidade do mapa, com a contagem de cada nível no recorte atual.
 function renderMapaLegenda() {
   const el = document.getElementById('mapaLegenda');
   if (!el) return;
@@ -3941,13 +3374,11 @@ function renderMapaLegenda() {
       `<span class="mapa-legenda-item"><i style="background:${GRAV_COLORS[g]}"></i>${esc(g)} <b>${n}</b></span>`
     ).join('');
 }
-
 function renderHotspots() {
   const byCidade = groupBy(DATA, 'cidade');
   const sorted = Object.entries(byCidade).map(([k,v]) => ({
     cidade: k, count: v.length, regiao: v[0].regiao, lat: v[0].lat, lng: v[0].lng
   })).sort((a,b) => b.count - a.count).slice(0, 15);
-
   const lista = document.getElementById('hotspotList');
   lista.innerHTML = sorted.map((h, i) => {
     const temCoord = Number.isFinite(h.lat) && Number.isFinite(h.lng) && (h.lat !== 0 || h.lng !== 0);
@@ -3964,8 +3395,6 @@ function renderHotspots() {
       <div class="hotspot-count">${h.count}</div>
     </div>`;
   }).join('');
-
-  // Listener delegado em vez de onclick inline com dado interpolado.
   if (!lista.dataset.bound) {
     const irParaMapa = (alvo) => {
       const el = alvo.closest('.hotspot[data-lat]');
@@ -3979,18 +3408,12 @@ function renderHotspots() {
     lista.dataset.bound = '1';
   }
 }
-
 function renderRegiaoChart() {
-  // Série ÚNICA de valores nominais: todas as barras usam o slot 1.
-  // Colorir cada barra de um matiz diferente gastaria o canal de identidade
-  // repetindo o que o comprimento da barra já diz — e era o que produzia a
-  // sequência de 4 cores seguida de barras cinzas.
   const contagem = {};
   DATA.forEach(r => { if (r.regiao) contagem[r.regiao] = (contagem[r.regiao] || 0) + 1; });
   const ordenado = Object.entries(contagem).sort((a, b) => b[1] - a[1]);
   const labels = ordenado.map(([n]) => n);
   const data = ordenado.map(([, n]) => n);
-
   if (charts.regiao) charts.regiao.destroy();
   charts.regiao = new Chart(document.getElementById('chartRegiao'), {
     type: 'bar',
@@ -4011,11 +3434,9 @@ function renderRegiaoChart() {
     }
   });
 }
-
 function renderClimaChart() {
   const { labels, valores, cores, detalheOutros } = agruparComOutros(DATA, 'condicao_climatica', 'clima');
   const total = valores.reduce((s, v) => s + v, 0);
-
   if (charts.clima) charts.clima.destroy();
   charts.clima = new Chart(document.getElementById('chartClima'), {
     type: 'doughnut',
@@ -4039,16 +3460,13 @@ function renderClimaChart() {
     }
   });
 }
-
 function renderRespRegiaoChart() {
   const wrap = document.getElementById('chartRespRegiao').parentElement;
   limparAviso(wrap);
-
   if (!temDados(DATA, 'tempo_resposta_min')) {
     return graficoSemDado('respRegiao', 'chartRespRegiao', 'Tempo de resposta indisponível',
       'A coluna <strong>tempo de resposta (min)</strong> não está preenchida na planilha.');
   }
-
   const byRegiao = groupBy(DATA, 'regiao');
   const labels = Object.keys(byRegiao);
   const data = labels.map(l => avg(byRegiao[l], 'tempo_resposta_min'));
@@ -4059,7 +3477,6 @@ function renderRespRegiaoChart() {
       labels,
       datasets: [{
         data,
-        // Limiar contra a meta de 45 min: significado reservado, veste status.
         backgroundColor: data.map(v => v === null ? COR_OUTROS : v > 60 ? STATUS.critico : v > 45 ? STATUS.atencao : STATUS.bom),
         borderRadius: 0, barPercentage: 0.6
       }]
@@ -4073,42 +3490,31 @@ function renderRespRegiaoChart() {
     }
   });
 }
-
-// ============================================
-// OPS TAB
-// ============================================
 function renderHeatmap() {
   const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const counts = {};
   dias.forEach(d => { counts[d] = Array(24).fill(0); });
   DATA.forEach(r => {
     if (!r.horario) return;
-    // Deriva o dia da semana diretamente da data (imune a variações de texto/acentuação
-    // vindas da planilha, ex: "segunda-feira", "SEGUNDA", sem acento etc.)
     let diaKey = r.dia_semana;
     if (r.data) {
       const d = new Date(r.data + 'T00:00:00');
       if (!Number.isNaN(d.getTime())) diaKey = dias[d.getDay()];
     }
-    if (!counts[diaKey]) return; // ignora valores que não batem com nenhum dia válido
+    if (!counts[diaKey]) return; 
     const h = parseInt(String(r.horario).slice(0,2), 10);
     if (!Number.isFinite(h) || h < 0 || h > 23) return;
     counts[diaKey][h]++;
   });
   const allVals = dias.flatMap(d => counts[d]);
   const max = Math.max(...allVals, 1);
-
-  // Mesma rampa sequencial do treemap — o painel inteiro fala uma língua só.
   const colorScale = (v) => (v === 0 ? COR_VAZIO : corDaRampa(v / max));
-
   const el = document.getElementById('heatmap');
   let html = '<div class="heatmap-grid">';
-  // header row
   html += '<div></div>';
   for (let h = 0; h < 24; h++) {
     html += `<div class="heatmap-col-label">${h}</div>`;
   }
-  // rows
   dias.forEach(d => {
     html += `<div class="heatmap-row-label">${d.slice(0,3).toUpperCase()}</div>`;
     for (let h = 0; h < 24; h++) {
@@ -4118,8 +3524,6 @@ function renderHeatmap() {
   });
   html += '</div>';
   el.innerHTML = html;
-
-  // Legenda com os limites reais da escala, não rótulos genéricos.
   const legenda = document.getElementById('heatmapLegenda');
   if (legenda) {
     legenda.innerHTML =
@@ -4130,31 +3534,28 @@ function renderHeatmap() {
       `<span>${max} socorro${max === 1 ? '' : 's'}/hora</span>`;
   }
 }
-
 function renderPareto() {
-  // CURVA DE CONCENTRAÇÃO, medida única (% acumulado dos socorros).
-  //
-  // Antes: barras de contagem + linha de % acumulado em DOIS eixos Y. Ao pôr
-  // cada série na própria escala, o autor decide onde elas se cruzam — as
-  // barras pareciam altas porque tinham um eixo só delas.
-  // Com eixo único honesto as barras somem (nenhum veículo passa de ~3% do
-  // total), e é justamente isso que o card quer mostrar: a concentração não
-  // está em poucos veículos, está espalhada. A curva conta essa história
-  // inteira sozinha, sem precisar de uma segunda escala.
   const byVeic = groupBy(DATA, 'veiculo');
   const todos = Object.entries(byVeic).map(([k, v]) => [k, v.length]).sort((a, b) => b[1] - a[1]);
   const totalGeral = DATA.length || 1;
-
+  const elInsight = document.getElementById('paretoInsight');
+  if (!todos.length) {
+    if (charts.pareto) { charts.pareto.destroy(); charts.pareto = null; }
+    if (elInsight) elInsight.textContent = '';
+    mostrarAviso(document.getElementById('chartPareto').parentElement,
+      'Sem veículos no período', 'Nenhum registro para calcular a concentração.');
+    return;
+  }
+  limparAviso(document.getElementById('chartPareto').parentElement);
   let cum = 0;
   const pontos = todos.map(([veic, n], i) => {
     cum += n;
     return {
-      x: +(((i + 1) / todos.length) * 100).toFixed(2), // % da frota
-      y: +((cum / totalGeral) * 100).toFixed(2),       // % dos socorros
+      x: +(((i + 1) / todos.length) * 100).toFixed(2), 
+      y: +((cum / totalGeral) * 100).toFixed(2),       
       veic, n,
     };
   });
-
   if (charts.pareto) charts.pareto.destroy();
   charts.pareto = new Chart(document.getElementById('chartPareto'), {
     type: 'line',
@@ -4176,9 +3577,6 @@ function renderPareto() {
           tension: 0,
         },
         {
-          // Referência: distribuição perfeitamente uniforme (todo veículo com o
-          // mesmo número de socorros). A distância entre as duas curvas É a
-          // concentração — sem ela o eixo não tem contra o que ser lido.
           label: 'Distribuição uniforme',
           data: [{ x: 0, y: 0 }, { x: 100, y: 100 }],
           parsing: false,
@@ -4214,44 +3612,33 @@ function renderPareto() {
       }
     }
   });
-
-  // 80/20 insight
-  // Leitura 80/20 em texto. "Apenas X%" só cabe quando X é de fato pequeno —
-  // com a frota espalhada, 61% não é concentração e a frase precisa dizer isso.
   let s = 0, c = 0;
   for (const [, n] of todos) {
     s += n; c++;
     if (s >= DATA.length * 0.8) break;
   }
-  const pct = todos.length ? (c / todos.length) * 100 : 0;
-  const el = document.getElementById('paretoInsight');
+  const pct = (c / todos.length) * 100;
+  const el = elInsight;
   if (el) {
     el.textContent = pct <= 35
       ? `Concentrado: ${pct.toFixed(0)}% da frota responde por 80% dos socorros (${c} de ${todos.length} veículos).`
       : `Pouco concentrado: são necessários ${pct.toFixed(0)}% da frota (${c} de ${todos.length} veículos) para somar 80% dos socorros — o problema está distribuído, não em poucos veículos.`;
   }
 }
-
 function renderGauge() {
   const respMed = avg(DATA, 'tempo_resposta_min');
   const arc = document.getElementById('gaugeArc');
   const valEl = document.getElementById('gaugeRespVal');
   const legenda = document.getElementById('gaugeLegenda');
-
-  // Sem tempo de resposta registrado o ponteiro fica em zero e a cor neutra —
-  // antes o gauge marcava "0 min" em verde, sugerindo atendimento instantâneo.
   if (respMed === null) {
     valEl.textContent = SEM_DADO;
-    // Esconde o arco por completo: com dasharray "0 100" o stroke-linecap
-    // redondo ainda desenhava um ponto solto na origem, que parecia um valor.
     arc.style.display = 'none';
     if (legenda) legenda.textContent = 'coluna sem preenchimento';
     return;
   }
-
   arc.style.display = '';
   valEl.textContent = respMed.toFixed(0);
-  const pct = Math.min(100, (respMed / 90) * 100); // 0–90 min mapeados no arco
+  const pct = Math.min(100, (respMed / 90) * 100); 
   arc.setAttribute('stroke-dasharray', `${pct} 100`);
   arc.setAttribute('stroke', respMed > 60 ? STATUS.critico : respMed > 45 ? STATUS.atencao : STATUS.bom);
   if (legenda) {
@@ -4259,17 +3646,13 @@ function renderGauge() {
     legenda.textContent = `minutos · meta: 45 · base: ${n} registro(s)`;
   }
 }
-
 function renderCostChart() {
   const ctx = document.getElementById('chartCost');
   limparAviso(ctx.parentElement);
-
   if (!temDados(DATA, 'custo_estimado')) {
     return graficoSemDado('cost', 'chartCost', 'Custo indisponível',
       'A coluna <strong>custo estimado</strong> não está preenchida na planilha.');
   }
-
-  // histograma de custos — só registros com custo informado
   const buckets = [0, 1000, 2000, 3000, 4000, 5000, 7000];
   const labels = ['<1k', '1-2k', '2-3k', '3-4k', '4-5k', '5-7k', '7k+'];
   const counts = Array(labels.length).fill(0);
@@ -4289,9 +3672,6 @@ function renderCostChart() {
     type: 'bar',
     data: { labels, datasets: [{
       data: counts,
-      // Histograma = uma série só sobre faixas ordenadas. Antes cada faixa tinha
-      // uma cor (verde→amarelo→vermelho), sugerindo que custo alto é "ruim" —
-      // um julgamento que o gráfico não mede. Um matiz só, a altura compara.
       backgroundColor: PALETA_CATEGORICA[0],
       borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
       barPercentage: 0.8,
@@ -4306,18 +3686,10 @@ function renderCostChart() {
     }
   });
 }
-
-// Este card mostrava um donut "Preventiva vs Corretiva" cujo valor de preventiva
-// era `Math.round(total * 1.6)` — uma constante mágica, não um dado. A planilha
-// de socorros registra apenas atendimentos corretivos; não há como saber o
-// volume de manutenção preventiva a partir dela.
-// Em vez de inventar, o card passa a mostrar a composição por gravidade, que os
-// dados sustentam de verdade.
 function renderMaintChart() {
   const gravs = ['Crítica', 'Alta', 'Média', 'Baixa'];
   const contagem = gravs.map(g => DATA.filter(r => r.gravidade === g).length);
   const presentes = gravs.map((g, i) => [g, contagem[i]]).filter(([, n]) => n > 0);
-
   if (charts.maint) charts.maint.destroy();
   charts.maint = new Chart(document.getElementById('chartMaint'), {
     type: 'doughnut',
@@ -4325,8 +3697,6 @@ function renderMaintChart() {
       labels: presentes.map(([g]) => g),
       datasets: [{
         data: presentes.map(([, n]) => n),
-        // Gravidade é ordinal e significa bom→crítico: veste a escala de status
-        // (reservada), nunca cores categóricas de série.
         backgroundColor: presentes.map(([g]) => GRAV_COLORS[g] || COR_OUTROS),
         borderColor: SUPERFICIE_CARD, borderWidth: 2, hoverOffset: 6
       }]
@@ -4340,15 +3710,9 @@ function renderMaintChart() {
     }
   });
 }
-
 function renderFalhaChart() {
-  // Era polarArea: a área do setor cresce com o QUADRADO do raio, então uma
-  // categoria com o dobro do valor parecia ter quatro vezes mais. Barras
-  // horizontais comparam magnitude sem essa distorção e ainda cabem rótulos
-  // longos de tipo de falha.
   const { labels, valores, cores, detalheOutros } = agruparComOutros(DATA, 'tipo_falha', 'tipo_falha');
   const total = valores.reduce((s, v) => s + v, 0);
-
   if (charts.falha) charts.falha.destroy();
   charts.falha = new Chart(document.getElementById('chartFalha'), {
     type: 'bar',
@@ -4376,32 +3740,22 @@ function renderFalhaChart() {
     }
   });
 }
-
-
 function renderSocorristas() {
-  // Agrupa pelo socorrista principal, unificando grafias (acento/caixa).
   const IGNORAR = new Set(['SEM SOS', 'NAN', 'N A', 'NA', 'NAO INFORMADO', '']);
   const registros = DATA
     .map(r => ({ responsavel: String(r.responsavel || '').split(' / ')[0].trim() }))
     .filter(r => !IGNORAR.has(chaveCanonica(r.responsavel)));
-
   const { itens } = topNCanonico(registros, 'responsavel', 10);
   renderRanking('rankSocorristas', itens, registros.length);
-
   const meta = document.getElementById('rankSocorristas')?.closest('.card')?.querySelector('.card-meta');
   if (meta) {
     const sem = DATA.length - registros.length;
     meta.textContent = sem ? `volume · ${sem} sem socorrista` : 'volume de atendimentos';
   }
 }
-
-// ============================================
-// PREDICTIVE TAB
-// ============================================
 function renderPredictKPIs() {
   const d = DATA;
   const n = d.length;
-
   const set = (id, texto, cor) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -4409,7 +3763,6 @@ function renderPredictKPIs() {
     el.style.color = cor || '';
     el.classList.toggle('vazio', texto === SEM_DADO);
   };
-  // Marca o card inteiro e ajusta o subtítulo quando o indicador não tem base.
   const marcarCobertura = (id, comDado, totalPossivel) => {
     const card = document.getElementById(id)?.closest('.predict-kpi');
     if (!card) return;
@@ -4421,59 +3774,38 @@ function renderPredictKPIs() {
         : 'coluna vazia na planilha';
     }
   };
-
   if (!n) {
     ['pKqpk','pKmttr','pKmttf','pKsla','pKconf','pKcpk'].forEach(id => set(id, SEM_DADO));
     return;
   }
-
-  // QPK — quebras por 1 000 km. Precisa de km rodado; sem isso não existe.
   const kmVals = valoresDe(d, 'km_desde_revisao');
   const totalKm = kmVals.reduce((s, v) => s + v, 0);
   const qpk = kmVals.length && totalKm > 0 ? (n / totalKm) * 1000 : null;
   set('pKqpk', ouTraco(qpk, v => v.toFixed(4)));
   marcarCobertura('pKqpk', kmVals.length, n);
-
-  // MTTR — tempo médio de reparo (h)
   const mttr = avg(d, 'tempo_reparo_h');
   set('pKmttr', ouTraco(mttr, v => v.toFixed(1) + 'h'));
   marcarCobertura('pKmttr', valoresDe(d, 'tempo_reparo_h').length, n);
-
-  // MTTF — proxy por dias desde a última manutenção
   const mttf = avg(d, 'dias_desde_manutencao');
   set('pKmttf', ouTraco(mttf, v => Math.round(v) + 'd'));
   marcarCobertura('pKmttf', valoresDe(d, 'dias_desde_manutencao').length, n);
-
-  // SLA — % de atendimentos com resposta <= 30 min, apenas entre os que TÊM tempo
-  // registrado. Antes o denominador era o total e registros vazios (0 min)
-  // contavam como dentro do SLA, o que produzia "100%" em verde.
   const slaInfo = contarCom(d, 'tempo_resposta_min', v => v <= 30);
   set('pKsla', ouTraco(slaInfo.pct, v => v.toFixed(1) + '%'),
       slaInfo.pct === null ? '' : (slaInfo.pct >= 40 ? 'var(--moss)' : slaInfo.pct >= 25 ? 'var(--gold)' : 'var(--rust)'));
   marcarCobertura('pKsla', slaInfo.comDado, n);
-
-  // Confiabilidade — % de falhas de gravidade baixa ou média (gravidade sempre existe)
   const conf = (d.filter(r => r.gravidade === 'Baixa' || r.gravidade === 'Média').length / n) * 100;
   set('pKconf', conf.toFixed(1) + '%',
       conf >= 70 ? 'var(--moss)' : conf >= 50 ? 'var(--gold)' : 'var(--rust)');
   marcarCobertura('pKconf', n, n);
-
-  // Custo / km — precisa de custo E de km
   const custoTotal = sum(d, 'custo_estimado');
   const cpk = (custoTotal !== null && kmVals.length && totalKm > 0) ? custoTotal / totalKm : null;
   set('pKcpk', ouTraco(cpk, v => 'R$' + v.toFixed(4)));
   marcarCobertura('pKcpk', (custoTotal !== null && kmVals.length) ? Math.min(valoresDe(d,'custo_estimado').length, kmVals.length) : 0, n);
 }
-
 function renderForecast() {
   const wrap = document.getElementById('chartForecast').parentElement;
   const insightEl = document.getElementById('forecastInsight');
   limparAviso(wrap);
-
-  // Só datas ISO válidas entram na série. Antes, uma única célula "20/07"
-  // (dia/mês sem ano) ordenava antes de "2026-05-01", virava Invalid Date e o
-  // laço abaixo nunca executava — a série histórica inteira saía vazia e a
-  // previsão virava 30 zeros, sem nenhum aviso na tela.
   const byDay = {};
   let descartados = 0;
   DATA.forEach(r => {
@@ -4481,7 +3813,6 @@ function renderForecast() {
     byDay[r.data] = (byDay[r.data] || 0) + 1;
   });
   const dates = Object.keys(byDay).sort();
-
   if (dates.length < 14) {
     if (charts.forecast) { charts.forecast.destroy(); charts.forecast = null; }
     mostrarAviso(wrap, 'Série curta demais para projetar',
@@ -4489,7 +3820,6 @@ function renderForecast() {
     if (insightEl) insightEl.textContent = '';
     return;
   }
-
   const start = new Date(dates[0] + 'T00:00:00');
   const end = new Date(dates[dates.length - 1] + 'T00:00:00');
   const series = [];
@@ -4497,16 +3827,11 @@ function renderForecast() {
     const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     series.push({ date: new Date(d), count: byDay[k] || 0 });
   }
-
-  // Média móvel de 7 dias
   const window = Math.min(7, series.length);
   const smoothed = series.map((p, i) => {
     const slice = series.slice(Math.max(0, i - window + 1), i + 1);
     return slice.reduce((s, x) => s + x.count, 0) / slice.length;
   });
-
-  // Suavização exponencial com tendência linear (nível + trend). NÃO é
-  // Holt-Winters: não há componente sazonal aqui.
   const last30 = smoothed.slice(-30);
   const alpha = 0.3;
   let level = last30[0] || 0, trend = 0;
@@ -4515,26 +3840,16 @@ function renderForecast() {
     level = alpha * last30[i] + (1 - alpha) * (level + trend);
     trend = 0.1 * (level - prev) + 0.9 * trend;
   }
-
-  // Tendência AMORTECIDA (damped trend, φ<1). Extrapolar a tendência linear por
-  // 30 dias fazia a projeção despencar até zero — falha clássica de tendência
-  // linear em contagens diárias ruidosas. Com o amortecimento, o efeito da
-  // tendência decai e a projeção converge para um patamar.
   const PHI = 0.85;
   const futureLabels = [], futureVals = [], futureHi = [], futureLo = [];
   const meanLast = last30.length ? last30.reduce((s,v)=>s+v,0)/last30.length : 0;
   const std = last30.length ? Math.sqrt(last30.reduce((s, v) => s + (v - meanLast) ** 2, 0) / last30.length) : 0;
-
   const nivelBase = level;
   let somaPhi = 0;
   for (let i = 1; i <= 30; i++) {
     somaPhi += PHI ** i;
     const previsto = Math.max(0, nivelBase + somaPhi * trend);
-
-    // A incerteza CRESCE com o horizonte (∝ √h): prever daqui a 30 dias é mais
-    // incerto que amanhã. Antes a faixa tinha largura constante.
     const margem = 1.28 * std * Math.sqrt(i);
-
     const futDate = new Date(end);
     futDate.setDate(futDate.getDate() + i);
     futureLabels.push(`${futDate.getFullYear()}-${String(futDate.getMonth()+1).padStart(2,'0')}-${String(futDate.getDate()).padStart(2,'0')}`);
@@ -4542,7 +3857,6 @@ function renderForecast() {
     futureHi.push(+(previsto + margem).toFixed(2));
     futureLo.push(+Math.max(0, previsto - margem).toFixed(2));
   }
-
   const histWindow = Math.min(90, series.length);
   const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const allLabels = [...series.slice(-histWindow).map(p => isoLocal(p.date)), ...futureLabels];
@@ -4550,17 +3864,12 @@ function renderForecast() {
   const fcstData  = [...Array(histWindow).fill(null), ...futureVals];
   const hiData    = [...Array(histWindow).fill(null), ...futureHi];
   const loData    = [...Array(histWindow).fill(null), ...futureLo];
-
   if (charts.forecast) charts.forecast.destroy();
   charts.forecast = new Chart(document.getElementById('chartForecast'), {
     type: 'line',
     data: {
       labels: allLabels,
       datasets: [
-        // Histórico e projeção são a MESMA série medida de dois jeitos, então
-        // dividem o matiz: o traço contínuo é o observado, o tracejado é o
-        // projetado. A faixa de incerteza é o mesmo matiz translúcido — antes
-        // eram amarelo cru e branco, sem relação com o sistema de cor.
         { label: 'Histórico (média móvel 7d)', data: histData,
           borderColor: PALETA_CATEGORICA[0], backgroundColor: 'transparent',
           borderWidth: 2, pointRadius: 0, tension: 0.4 },
@@ -4579,8 +3888,6 @@ function renderForecast() {
       responsive: true, maintainAspectRatio: false, animation: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        // Duas séries visíveis (observado × projetado) ⇒ legenda obrigatória:
-        // a identidade não pode depender só de "cheio vs tracejado".
         legend: { display: true, position: 'bottom',
                   labels: { padding: 12, boxWidth: 22, boxHeight: 2, font: { size: 11 },
                             filter: item => item.datasetIndex < 2 } },
@@ -4594,14 +3901,12 @@ function renderForecast() {
       }
     }
   });
-
   const totalForecast = Math.round(futureVals.reduce((s, v) => s + v, 0));
   if (insightEl) {
     const nota = descartados ? `  ·  ${descartados} registro(s) sem data válida fora da série` : '';
     insightEl.textContent = `▶ Projeção: ${totalForecast} ocorrências nos próximos 30 dias  ·  base: ${series.length} dias observados${nota}`;
   }
 }
-
 function renderAlerts() {
   const alerts = [];
   if (!DATA.length) {
@@ -4610,8 +3915,6 @@ function renderAlerts() {
   }
   const byVeic = groupBy(DATA, 'veiculo');
   const sortedVeic = Object.entries(byVeic).sort((a, b) => b[1].length - a[1].length);
-
-  // 1. Veículo com mais ocorrências
   if (sortedVeic[0]) {
     const [v, list] = sortedVeic[0];
     const hs = avg(list, 'health_score');
@@ -4621,8 +3924,6 @@ function renderAlerts() {
       desc: `${list.length} ocorrências no período (${(list.length / DATA.length * 100).toFixed(1)}% do total)${sufixo}`,
       meta: 'P1 FROTA' });
   }
-
-  // 2. Hora crítica — só considera registros com horário preenchido
   const byHour = {};
   let comHorario = 0;
   DATA.forEach(r => {
@@ -4638,10 +3939,6 @@ function renderAlerts() {
       desc: `${peakH[1]} de ${comHorario} registros com horário concentram-se nesta hora. Reforçar escala de socorristas.`,
       meta: 'ESCALA' });
   }
-
-  // 3. SLA — só existe se houver tempo de resposta registrado.
-  // Antes o denominador era o total de registros e os vazios (0 min) contavam
-  // como "dentro do SLA", o que escondia justamente o problema.
   const slaInfo = contarCom(DATA, 'tempo_resposta_min', v => v <= 30);
   if (slaInfo.pct !== null && slaInfo.pct < 40) {
     const overSla = DATA.filter(r => typeof r.tempo_resposta_min === 'number' && r.tempo_resposta_min > 30);
@@ -4656,8 +3953,6 @@ function renderAlerts() {
       desc: 'Nenhum registro do período tem tempo de resposta preenchido na planilha.',
       meta: 'SLA' });
   }
-
-  // 4. QPK — depende de km rodado
   const kmVals = valoresDe(DATA, 'km_desde_revisao');
   const totalKm = kmVals.reduce((s, v) => s + v, 0);
   const qpk = (kmVals.length && totalKm > 0) ? (DATA.length / totalKm) * 1000 : null;
@@ -4677,8 +3972,6 @@ function renderAlerts() {
       desc: 'Abaixo do limite de 0,1000. Manter rastreio mensal.',
       meta: 'QPK' });
   }
-
-  // 5. Veículos com índice de risco crítico
   const riskVeics = Object.entries(byVeic)
     .map(([v, recs]) => ({ v, hs: avg(recs, 'health_score') }))
     .filter(x => x.hs !== null && x.hs < 45)
@@ -4689,8 +3982,6 @@ function renderAlerts() {
       desc: `Mais crítico: Veículo ${riskVeics[0].v} · índice ${Math.round(riskVeics[0].hs)}. Priorizar inspeção.`,
       meta: 'RISCO' });
   }
-
-  // 6. MTTR elevado
   const mttr = avg(DATA, 'tempo_reparo_h');
   if (mttr !== null && mttr > 6) {
     const critMttr = avg(DATA.filter(r => r.gravidade === 'Crítica'), 'tempo_reparo_h');
@@ -4699,7 +3990,6 @@ function renderAlerts() {
       desc: `Casos críticos: ${critMttr === null ? SEM_DADO : critMttr.toFixed(1) + 'h'} de reparo em média. Verificar disponibilidade de peças e mão de obra.`,
       meta: 'MTTR' });
   }
-
   document.getElementById('alertList').innerHTML = alerts.map(a => `
     <li class="alert-item">
       <div class="alert-bar ${esc(a.level)}"></div>
@@ -4707,12 +3997,8 @@ function renderAlerts() {
       <div class="alert-meta">${esc(a.meta)}</div>
     </li>`).join('');
 }
-
 function renderHealthList() {
   const el = document.getElementById('healthList');
-
-  // O índice de risco depende de idade/km/dias de manutenção. Se a planilha não
-  // traz nenhuma dessas colunas, não há score — e inventar um seria pior que dizer.
   if (!temDados(DATA, 'health_score')) {
     el.innerHTML = avisoSemDado(
       'Índice de risco indisponível',
@@ -4720,7 +4006,6 @@ function renderHealthList() {
     );
     return;
   }
-
   const list = Object.entries(groupBy(DATA, 'veiculo')).map(([k, recs]) => ({
     veiculo: k,
     chassi: recs[0].chassi,
@@ -4732,7 +4017,6 @@ function renderHealthList() {
     .filter(v => v.score !== null)
     .sort((a, b) => a.score - b.score)
     .slice(0, 14);
-
   el.innerHTML = list.map(v => {
     const score = Math.round(v.score);
     const cls = score < 40 ? 'crit' : score < 60 ? 'warn' : '';
@@ -4747,18 +4031,15 @@ function renderHealthList() {
     </div>`;
   }).join('');
 }
-
 function renderRecs() {
   const byVeic = groupBy(DATA, 'veiculo');
   const recs = [];
-
   Object.entries(byVeic).sort((a, b) => b[1].length - a[1].length).slice(0, 5).forEach(([v, list]) => {
     const defects = groupBy(list, 'grupo');
     const topDef = Object.entries(defects).sort((a, b) => b[1].length - a[1].length)[0];
     if (!topDef) return;
     const hs = avg(list, 'health_score');
     const mttfV = avg(topDef[1], 'dias_desde_manutencao');
-    // Só entra na frase o que existe de fato.
     const partes = [`${topDef[1].length} falhas nesse grupo`];
     if (hs !== null) partes.push(`índice de risco ${Math.round(hs)}`);
     if (mttfV !== null) partes.push(`MTTF ${Math.round(mttfV)}d`);
@@ -4767,8 +4048,6 @@ function renderRecs() {
       desc: `${partes.join(' · ')} · Agendar inspeção antes do próximo ciclo.`,
       meta: 'PREV' });
   });
-
-  // Grupos com reparo mais lento — exige tempo de reparo registrado
   const slowGroups = Object.entries(groupBy(DATA, 'grupo'))
     .map(([g, lista]) => ({ g, mttr: avg(lista, 'tempo_reparo_h'), n: lista.length }))
     .filter(x => x.n >= 2 && x.mttr !== null)
@@ -4779,8 +4058,6 @@ function renderRecs() {
       desc: `${sg.n} ocorrências com reparo lento. Avaliar treinamento específico ou estoque local de peças.`,
       meta: 'EFICIÊNCIA' });
   });
-
-  // QPK por veículo — só faz sentido com quilometragem registrada
   const qpkVeics = Object.entries(byVeic)
     .map(([v, lista]) => {
       const kmVals = valoresDe(lista, 'km_desde_revisao');
@@ -4797,7 +4074,6 @@ function renderRecs() {
       desc: `QPK individual${frotaQpk === null ? '' : ` acima da frota (${frotaQpk.toFixed(4)})`}. Investigar histórico de manutenção.`,
       meta: 'QPK' });
   }
-
   if (!recs.length) {
     document.getElementById('recList').innerHTML = `<li class="alert-item">
       <div class="alert-bar info"></div>
@@ -4806,7 +4082,6 @@ function renderRecs() {
       <div class="alert-meta">INFO</div></li>`;
     return;
   }
-
   document.getElementById('recList').innerHTML = recs.map(r => `
     <li class="alert-item">
       <div class="alert-bar ${esc(r.level)}"></div>
@@ -4814,19 +4089,15 @@ function renderRecs() {
       <div class="alert-meta">${esc(r.meta)}</div>
     </li>`).join('');
 }
-
 function renderQpkChart() {
   const wrap = document.getElementById('chartQpk').parentElement;
   limparAviso(wrap);
   const insight = document.getElementById('insightQpk');
-
   if (!temDados(DATA, 'km_desde_revisao')) {
     if (insight) insight.textContent = '';
     return graficoSemDado('qpk', 'chartQpk', 'QPK indisponível',
       'A coluna <strong>km desde a revisão</strong> não está preenchida — sem quilometragem não há quebras por 1 000 km.');
   }
-
-  // Agrupa por mês-ano, não por nome do mês.
   const meses = porMesAno(DATA).filter(m => temDados(m.registros, 'km_desde_revisao'));
   const labels = meses.map(m => m.rotulo);
   const qpkVals = meses.map(m => {
@@ -4835,9 +4106,7 @@ function renderQpkChart() {
   });
   const validos = qpkVals.filter(v => v !== null);
   const avgQpk = validos.length ? validos.reduce((s, v) => s + v, 0) / validos.length : 0;
-  // Acima da média do período = pior: significado reservado, veste status.
   const colors = qpkVals.map(v => (v !== null && v > avgQpk) ? STATUS.critico : STATUS.bom);
-
   if (charts.qpk) charts.qpk.destroy();
   charts.qpk = new Chart(document.getElementById('chartQpk'), {
     type: 'bar',
@@ -4862,10 +4131,6 @@ function renderQpkChart() {
       }
     }
   });
-
-  // Tendência: só faz sentido com pelo menos dois meses comparáveis.
-  // Antes, com um único mês, exibia "▼ 0% vs. início do período" em verde —
-  // sugerindo melhora onde não havia comparação nenhuma.
   if (insight) {
     const primeiro = validos[0], ultimo = validos[validos.length - 1];
     if (validos.length < 2 || !primeiro) {
@@ -4878,27 +4143,19 @@ function renderQpkChart() {
     }
   }
 }
-
 function renderMttrChart() {
   const wrap = document.getElementById('chartMttr').parentElement;
   limparAviso(wrap);
-
   if (!temDados(DATA, 'tempo_reparo_h')) {
     return graficoSemDado('mttr', 'chartMttr', 'MTTR indisponível',
       'A coluna <strong>tempo de reparo (h)</strong> não está preenchida na planilha.');
   }
-
-  // As categorias SÃO a gravidade, então vestem as mesmas cores de status que a
-  // gravidade usa em todo o painel — não uma paleta própria deste gráfico.
   const gravs = ['Baixa', 'Média', 'Alta', 'Crítica'];
   const colors = gravs.map(g => GRAV_COLORS[g]);
-  // avg() devolve null quando nenhum registro daquela gravidade tem tempo de
-  // reparo — vira null no dataset (barra ausente), não 0 (barra "zero horas").
   const vals = gravs.map(g => {
     const m = avg(DATA.filter(r => r.gravidade === g), 'tempo_reparo_h');
     return m === null ? null : +m.toFixed(1);
   });
-
   if (charts.mttr) charts.mttr.destroy();
   charts.mttr = new Chart(document.getElementById('chartMttr'), {
     type: 'bar',
@@ -4922,18 +4179,13 @@ function renderMttrChart() {
     }
   });
 }
-
 function renderSlaChart() {
   const wrap = document.getElementById('chartSla').parentElement;
   limparAviso(wrap);
-
-  // Sem tempo de resposta, todos os registros caíam no balde "0–15 min" e o
-  // título anunciava "100% dentro do SLA".
   if (!temDados(DATA, 'tempo_resposta_min')) {
     return graficoSemDado('slaChart', 'chartSla', 'SLA indisponível',
       'A coluna <strong>tempo de resposta (min)</strong> não está preenchida na planilha.');
   }
-
   const buckets = ['0–15', '16–30', '31–60', '61–90', '91–120', '>120'];
   const vals = [0, 0, 0, 0, 0, 0];
   let medidos = 0;
@@ -4949,10 +4201,7 @@ function renderSlaChart() {
     else               vals[5]++;
   });
   const inSla = vals[0] + vals[1];
-  // Faixas de tempo contra a meta de 30 min: dentro / próximo / fora.
-  // Escala de status reservada, os mesmos quatro tons do resto do painel.
   const colors = [STATUS.bom, STATUS.bom, STATUS.atencao, STATUS.serio, STATUS.critico, STATUS.critico];
-
   if (charts.slaChart) charts.slaChart.destroy();
   charts.slaChart = new Chart(document.getElementById('chartSla'), {
     type: 'bar',
@@ -4978,25 +4227,19 @@ function renderSlaChart() {
     }
   });
 }
-
 function renderSazonChart() {
   const wrap = document.getElementById('chartSazon').parentElement;
   limparAviso(wrap);
-
-  // Desvio de cada mês em relação à média mensal observada, por mês-ano.
   const meses = porMesAno(DATA);
   if (meses.length < 2) {
     return graficoSemDado('sazon', 'chartSazon', 'Sazonalidade indisponível',
       `São necessários pelo menos 2 meses de histórico; há <strong>${meses.length}</strong>.`);
   }
-
   const values = meses.map(m => m.registros.length);
   const mean = values.reduce((s, v) => s + v, 0) / values.length;
   const labels = meses.map(m => m.rotulo);
   const dev = values.map(v => +(v - mean).toFixed(1));
-  // Polaridade em torno da média: acima = mais socorros que o normal.
   const bgColors = dev.map(v => v >= 0 ? STATUS.critico : STATUS.bom);
-
   if (charts.sazon) charts.sazon.destroy();
   charts.sazon = new Chart(document.getElementById('chartSazon'), {
     type: 'bar',
@@ -5011,28 +4254,23 @@ function renderSazonChart() {
     }
   });
 }
-
 function renderCpkChart() {
   const wrap = document.getElementById('chartCpk').parentElement;
   limparAviso(wrap);
-
   if (!temDados(DATA, 'custo_estimado') || !temDados(DATA, 'km_desde_revisao')) {
     const falta = !temDados(DATA, 'custo_estimado') ? 'custo estimado' : 'km desde a revisão';
     return graficoSemDado('cpk', 'chartCpk', 'Custo por km indisponível',
       `A coluna <strong>${falta}</strong> não está preenchida na planilha.`);
   }
-
   const meses = porMesAno(DATA);
   const pontos = meses.map(m => {
     const custo = sum(m.registros, 'custo_estimado');
     const km = sum(m.registros, 'km_desde_revisao');
     return { rotulo: m.rotulo, val: (custo !== null && km) ? +(custo / km).toFixed(4) : null };
   }).filter(p => p.val !== null);
-
   const labels = pontos.map(p => p.rotulo);
   const vals   = pontos.map(p => p.val);
   const avgCpk = vals.length ? vals.reduce((s, v) => s + v, 0) / vals.length : 0;
-
   if (charts.cpk) charts.cpk.destroy();
   charts.cpk = new Chart(document.getElementById('chartCpk'), {
     type: 'line',
@@ -5061,29 +4299,23 @@ function renderCpkChart() {
     }
   });
 }
-
 function renderAnomChart() {
   const wrap = document.getElementById('chartAnom').parentElement;
   limparAviso(wrap);
-
   const byDay = {};
   DATA.forEach(r => { if (dataValida(r.data)) byDay[r.data] = (byDay[r.data] || 0) + 1; });
   const days = Object.keys(byDay).sort().slice(-60);
-
   if (days.length < 10) {
     return graficoSemDado('anom', 'chartAnom', 'Amostra insuficiente',
       `São necessários pelo menos 10 dias com registro para destacar dias atípicos; há <strong>${days.length}</strong>.`);
   }
-
   const counts = days.map(d => byDay[d]);
   const mean = counts.length ? counts.reduce((s, v) => s + v, 0) / counts.length : 0;
   const std  = counts.length ? Math.sqrt(counts.reduce((s, v) => s + (v - mean) ** 2, 0) / counts.length) : 0;
   const threshold = mean + 1.7 * std;
   const normal = counts.map(c => c <= threshold ? c : null);
   const anom   = counts.map(c => c >  threshold ? c : null);
-
-  const shortDays = days.map(d => d.slice(5)); // MM-DD
-
+  const shortDays = days.map(d => d.slice(5)); 
   if (charts.anom) charts.anom.destroy();
   charts.anom = new Chart(document.getElementById('chartAnom'), {
     type: 'line',
@@ -5120,14 +4352,11 @@ function renderAnomChart() {
     }
   });
 }
-
 function setupRecordsFilters() {
   preencherFiltrosRegistros();
   ['fSearch','fSetor','fChassi','fGrav'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => { recordsPage = 1; renderRecordsTable(); });
   });
-  // Cabeçalhos ordenáveis: acessíveis por teclado e com aria-sort para leitores
-  // de tela saberem por qual coluna e em que direção a tabela está ordenada.
   document.querySelectorAll('#recordsTable th[data-sort]').forEach(th => {
     th.setAttribute('role', 'columnheader');
     th.setAttribute('tabindex', '0');
@@ -5149,10 +4378,6 @@ function setupRecordsFilters() {
   document.getElementById('nextPage').addEventListener('click', () => { recordsPage++; renderRecordsTable(); });
   document.getElementById('btnLimparFiltros')?.addEventListener('click', clearFilters);
 }
-
-// Repovoa os selects preservando a seleção do usuário. Precisa rodar de novo a
-// cada sincronização: antes eram montados uma única vez, então setores/chassis
-// que aparecessem depois nunca entravam nas opções.
 function preencherFiltrosRegistros() {
   [['fSetor', 'setor'], ['fChassi', 'chassi']].forEach(([id, campo]) => {
     const sel = document.getElementById(id);
@@ -5164,7 +4389,6 @@ function preencherFiltrosRegistros() {
     if (anterior && valores.includes(anterior)) sel.value = anterior;
   });
 }
-
 function atualizarAriaSort() {
   document.querySelectorAll('#recordsTable th[data-sort]').forEach(th => {
     if (th.dataset.sort === sortKey) {
@@ -5178,13 +4402,11 @@ function atualizarAriaSort() {
     }
   });
 }
-
 function getFilteredRecords() {
   const q = document.getElementById('fSearch').value.toLowerCase();
   const setor = document.getElementById('fSetor').value;
   const chassi = document.getElementById('fChassi').value;
   const grav = document.getElementById('fGrav').value;
-
   let filtered = DATA.filter(r => {
     if (setor && r.setor !== setor) return false;
     if (chassi && r.chassi !== chassi) return false;
@@ -5195,7 +4417,6 @@ function getFilteredRecords() {
     }
     return true;
   });
-
   filtered.sort((a, b) => {
     let av = a[sortKey], bv = b[sortKey];
     if (typeof av === 'string') return sortDir * av.localeCompare(bv || '');
@@ -5203,7 +4424,6 @@ function getFilteredRecords() {
   });
   return filtered;
 }
-
 function renderRecordsTable() {
   const filtered = getFilteredRecords();
   const start = (recordsPage - 1) * RECORDS_PER_PAGE;
@@ -5230,7 +4450,6 @@ function renderRecordsTable() {
   document.getElementById('recCount').textContent = `${filtered.length} registros · página ${recordsPage} de ${totalPages}`;
   document.getElementById('pageInfo').textContent = `${recordsPage} / ${totalPages}`;
 }
-
 function clearFilters() {
   ['fSearch','fSetor','fChassi','fGrav'].forEach(id => {
     document.getElementById(id).value = '';
@@ -5238,20 +4457,14 @@ function clearFilters() {
   recordsPage = 1;
   renderRecordsTable();
 }
-
 function exportCSV() {
-  // Exporta exatamente o que a aba Registros está mostrando (período + filtros).
-  // Antes exportava só o filtro de período, então o CSV não batia com a tela.
   const naAbaRegistros = document.getElementById('tab-records')?.classList.contains('active');
   const filtered = naAbaRegistros ? getFilteredRecords() : DATA;
-
   const cols = ['data','horario','veiculo','chassi','cidade','regiao','linha','setor','grupo','defeito','gravidade','custo_estimado','tempo_resposta_min'];
   const csv = [cols.join(',')].concat(
     filtered.map(r => cols.map(c => {
       let v = r[c]; if (v == null) v = '';
       v = String(v).replace(/"/g, '""');
-      // Neutraliza fórmulas: uma célula iniciada por =, +, - ou @ é executada
-      // ao abrir o CSV no Excel/Sheets (CSV injection).
       if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
       if (v.includes(',') || v.includes('"') || v.includes('\n')) v = '"' + v + '"';
       return v;
@@ -5264,15 +4477,10 @@ function exportCSV() {
   document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
 }
-
-// ============================================
-// TAB SWITCHING
-// ============================================
 function switchTab(id) {
   const alvo = document.querySelector(`.nav-item[data-tab="${id}"]`);
   const painel = document.getElementById('tab-' + id);
   if (!alvo || !painel) return;
-
   document.querySelectorAll('.nav-item[data-tab]').forEach(n => {
     n.classList.remove('active');
     n.setAttribute('aria-selected', 'false');
@@ -5281,7 +4489,6 @@ function switchTab(id) {
   alvo.setAttribute('aria-selected', 'true');
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   painel.classList.add('active');
-  // Update page title
   const titles = {
     overview: { crumb: 'Operações / Socorro de Rua', title: 'Visão <em>Geral</em>' },
     map: { crumb: 'Operações / Mapa', title: 'Mapa <em>Geoespacial</em>' },
@@ -5292,9 +4499,6 @@ function switchTab(id) {
   };
   document.getElementById('crumb').textContent = titles[id].crumb;
   document.getElementById('pageTitle').innerHTML = titles[id].title;
-
-  // O timeout dá um frame para o CSS aplicar .active — os gráficos precisam do
-  // container já com dimensão real antes de medir.
   if (id === 'map') {
     setTimeout(() => {
       initMap();
@@ -5306,40 +4510,30 @@ function switchTab(id) {
   if (id === 'parts')  setTimeout(renderPartsAll, 30);
   if (id === 'predict') setTimeout(renderPredictAll, 30);
   if (id === 'records') renderRecordsTable();
-
-  // A Visão Geral não é redesenhada enquanto está oculta; ao voltar, se houve
-  // sincronização nesse meio-tempo, redesenha com o container já visível.
   if (id === 'overview' && overviewDesatualizada) {
     overviewDesatualizada = false;
     setTimeout(renderOverview, 30);
   }
 }
-
-// Executa uma lista de renders isolando falhas: um erro em um card não impede
-// os demais de desenhar.
 function renderResiliente(fns) {
   fns.forEach(fn => {
     try { fn(); }
     catch (err) { console.error(`Erro ao renderizar ${fn.name}:`, err); }
   });
 }
-
 function renderMapAll() {
   if (!map) return;
   renderResiliente([renderMapData, renderMapaLegenda, renderHotspots, renderRegiaoChart, renderClimaChart, renderRespRegiaoChart]);
 }
-
 function renderPredictAll() {
   renderResiliente([
     renderPredictKPIs, renderForecast, renderAlerts, renderQpkChart, renderMttrChart,
     renderSlaChart, renderHealthList, renderRecs, renderSazonChart, renderCpkChart, renderAnomChart
   ]);
 }
-
 function renderOverview() {
   renderResiliente([renderKPIs, renderTimeline, renderSectorDonut, renderTopRankings, renderFrotaChassi, renderPeriodChart]);
 }
-
 function renderOpsAll() {
   const steps = [renderHeatmap, renderPareto, renderGauge, renderCostChart, renderMaintChart, renderFalhaChart, renderSocorristas];
   steps.forEach(fn => {
@@ -5347,30 +4541,20 @@ function renderOpsAll() {
     catch (err) { console.error(`Erro ao renderizar ${fn.name}:`, err); }
   });
 }
-
-// ============================================
-// PEÇAS & FORNECEDORES
-// ============================================
 const FMT_BRL = n => 'R$ ' + Math.round(n).toLocaleString('pt-BR');
 const FMT_BRL_K = n => {
   if (n >= 1e6) return 'R$ ' + (n/1e6).toFixed(2) + 'M';
   if (n >= 1e3) return 'R$ ' + (n/1e3).toFixed(0) + 'k';
   return 'R$ ' + Math.round(n).toLocaleString('pt-BR');
 };
-
-// A aba inteira depende de colunas de peça/fornecedor. Se a planilha não as
-// traz, mostramos um aviso único em vez de nove cards de zeros — que antes
-// produziam coisas como "Reforçar estoque: PEÇA DIVERSA" e "100% de falha precoce".
 function temDadosDePecas() {
   return DATA.some(r => r.peca_nome || r.peca_codigo || r.fornecedor)
       || temDados(DATA, 'valor_peca')
       || temDados(DATA, 'km_peca');
 }
-
 function renderPartsAll() {
   const tab = document.getElementById('tab-parts');
   const bloqueio = document.getElementById('partsIndisponivel');
-
   if (!temDadosDePecas()) {
     tab.classList.add('sem-pecas');
     if (bloqueio) {
@@ -5381,11 +4565,8 @@ function renderPartsAll() {
     }
     return;
   }
-
   tab.classList.remove('sem-pecas');
   if (bloqueio) bloqueio.innerHTML = '';
-
-  // Resiliente como renderOpsAll: uma falha não derruba os demais cards.
   [renderPartsHero, renderPartsPareto, renderSistemaGrid, renderSistemaCustoChart,
    renderSuppliersTable, renderKmPecaChart, renderGarantiaChart, renderCustoSistemaChart,
    renderPartsRecommendations].forEach(fn => {
@@ -5393,32 +4574,23 @@ function renderPartsAll() {
     catch (err) { console.error(`Erro ao renderizar ${fn.name}:`, err); }
   });
 }
-
 function renderPartsHero() {
   const data = DATA;
   const comPeca = data.filter(r => r.peca_codigo || r.peca_nome);
   const uniq = new Set(comPeca.map(r => r.peca_codigo).filter(Boolean)).size;
-
   const totalCost = sum(data, 'valor_peca');
   const opCost    = sum(data, 'custo_peca_operador');
   const avgTicket = avg(data, 'valor_peca');
   const saved     = (totalCost !== null && opCost !== null) ? totalCost - opCost : null;
-
-  // Garantia: denominador = registros com a coluna preenchida, não o total.
   const comGarantia = data.filter(r => r.em_garantia !== null);
   const warrantyPct = comGarantia.length
     ? (comGarantia.filter(r => r.em_garantia).length / comGarantia.length) * 100 : null;
-
-  // Falha precoce: idem — antes km_peca vazio virava 0 e 0 < 60000 marcava
-  // "100% de mortalidade infantil" para uma coluna inteiramente vazia.
   const kmInfo = contarCom(data, 'km_peca', v => v < 60000);
   const earlyRefs = new Set(
     data.filter(r => typeof r.km_peca === 'number' && r.km_peca < 60000)
         .map(r => r.peca_codigo).filter(Boolean)
   ).size;
-
   const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
-
   set('partsTotalUnits', comPeca.length ? comPeca.length.toLocaleString('pt-BR') : SEM_DADO);
   set('partsUniqueRefs', uniq ? `${uniq} SKUs distintos` : 'sem código de peça registrado');
   set('partsTotalCost', totalCost === null ? SEM_DADO : FMT_BRL_K(totalCost));
@@ -5430,28 +4602,24 @@ function renderPartsHero() {
     ? `${earlyRefs} SKUs · base: ${kmInfo.comDado} peças com km`
     : 'sem km da peça na planilha');
 }
-
 function renderPartsPareto() {
   const map = {};
   DATA.forEach(r => {
     const k = r.peca_nome;
-    if (!k) return; // sem nome de peça o registro não entra no ranking
+    if (!k) return; 
     if (!map[k]) map[k] = { count: 0, cost: null, sistema: r.sistema, codigo: r.peca_codigo, warranty: 0 };
     map[k].count++;
     if (typeof r.valor_peca === 'number') map[k].cost = (map[k].cost ?? 0) + r.valor_peca;
     if (r.em_garantia) map[k].warranty++;
   });
-
   const arr = Object.entries(map).map(([k, v]) => ({ name: k, ...v }))
     .sort((a, b) => b.count - a.count).slice(0, 12);
-
   const el = document.getElementById('partsPareto');
   if (!arr.length) {
     el.innerHTML = avisoSemDado('Sem peças registradas',
       'Nenhum registro do período tem a coluna <strong>peça</strong> preenchida.');
     return;
   }
-
   const total = arr.reduce((s, x) => s + x.count, 0);
   const max = arr[0].count || 1;
   let cum = 0;
@@ -5474,7 +4642,6 @@ function renderPartsPareto() {
       </div>`;
   }).join('');
 }
-
 function renderSistemaGrid() {
   const map = {};
   DATA.forEach(r => {
@@ -5485,14 +4652,12 @@ function renderSistemaGrid() {
   });
   const arr = Object.entries(map).map(([k, v]) => ({ sistema: k, ...v }))
     .sort((a, b) => b.count - a.count);
-
   const el = document.getElementById('sistemaGrid');
   if (!arr.length) {
     el.innerHTML = avisoSemDado('Sem sistema técnico registrado',
       'A coluna <strong>sistema</strong> não está preenchida na planilha.');
     return;
   }
-
   const totalCount = arr.reduce((s, x) => s + x.count, 0);
   const max = arr[0].count || 1;
   el.innerHTML = arr.slice(0, 9).map(s => {
@@ -5507,19 +4672,16 @@ function renderSistemaGrid() {
       </div>`;
   }).join('');
 }
-
 function renderSistemaCustoChart() {
   const ctx = document.getElementById('chartSistemaCusto');
   if (!ctx) return;
   limparAviso(ctx.parentElement);
-
   if (!temDados(DATA, 'valor_peca')) {
     if (charts.sistemaCusto) { charts.sistemaCusto.destroy(); charts.sistemaCusto = null; }
     mostrarAviso(ctx.parentElement, 'Custo por sistema indisponível',
       'A coluna <strong>valor da peça</strong> não está preenchida na planilha.');
     return;
   }
-
   if (charts.sistemaCusto) charts.sistemaCusto.destroy();
   const map = {};
   DATA.forEach(r => {
@@ -5549,11 +4711,7 @@ function renderSistemaCustoChart() {
     }
   });
 }
-
-// Mínimo de itens para exibir uma taxa por fornecedor. Abaixo disso o percentual
-// é ruído (1 item em garantia = "100% de falha em garantia").
 const MIN_ITENS_FORNECEDOR = 5;
-
 function renderSuppliersTable() {
   const map = {};
   DATA.forEach(r => {
@@ -5565,26 +4723,19 @@ function renderSuppliersTable() {
     if (r.em_garantia !== null) { m.comGarantia++; if (r.em_garantia) m.emGarantia++; }
     if (r.sistema) m.sistemas.add(r.sistema);
   });
-
   const arr = Object.entries(map).map(([k, v]) => ({
     fornecedor: k, ...v,
     avg: v.cost === null ? null : v.cost / v.count,
-    // Só calcula a taxa com amostra suficiente E com a coluna preenchida.
     warrantyPct: (v.comGarantia >= MIN_ITENS_FORNECEDOR) ? (v.emGarantia / v.comGarantia) * 100 : null,
     sistemasArr: Array.from(v.sistemas)
   })).sort((a, b) => (b.cost ?? -1) - (a.cost ?? -1));
-
   const tbody = document.querySelector('#suppliersTable tbody');
   if (!arr.length) {
     tbody.innerHTML = `<tr><td colspan="7">${avisoSemDado('Sem fornecedor registrado',
       'A coluna <strong>fornecedor</strong> não está preenchida na planilha.')}</td></tr>`;
     return;
   }
-
   tbody.innerHTML = arr.map(s => {
-    // "Retorno em garantia" — nome do que de fato é medido: proporção de peças
-    // que falharam ainda dentro do prazo de garantia. NÃO é um índice de
-    // qualidade normalizado, e a escala arbitrária (100 - pct*2.5) foi removida.
     const pct = s.warrantyPct;
     const cls = pct === null ? '' : (pct <= 10 ? '' : pct <= 25 ? 'ok' : 'bad');
     const barra = pct === null
@@ -5604,14 +4755,9 @@ function renderSuppliersTable() {
       </tr>`;
   }).join('');
 }
-
 function renderKmPecaChart() {
   if (charts.kmPeca) charts.kmPeca.destroy();
   const data = DATA;
-  // Histogram bins: 0-30, 30-60, 60-100, 100-150, 150-200, 200+ (in thousands of km)
-  // Faixas de km ORDENADAS onde as duas primeiras significam falha precoce.
-  // Status nas faixas problemáticas, matiz único nas saudáveis — em vez de um
-  // arco-íris de seis cores que fazia cada faixa parecer uma categoria distinta.
   const bins = [
     { label: '< 30k', min: 0, max: 30000, color: STATUS.critico },
     { label: '30k–60k', min: 30000, max: 60000, color: STATUS.serio },
@@ -5623,16 +4769,12 @@ function renderKmPecaChart() {
   const ctx = document.getElementById('chartKmPeca');
   if (!ctx) return;
   limparAviso(ctx.parentElement);
-
-  // Sem km da peça o histograma inteiro caía no primeiro balde ("< 30k"),
-  // pintando 100% de vermelho e sugerindo mortalidade infantil generalizada.
   if (!temDados(data, 'km_peca')) {
     if (charts.kmPeca) { charts.kmPeca.destroy(); charts.kmPeca = null; }
     mostrarAviso(ctx.parentElement, 'Km da peça indisponível',
       'A coluna <strong>km da peça</strong> não está preenchida — sem ela não é possível avaliar mortalidade infantil.');
     return;
   }
-
   const counts = bins.map(b => data.filter(r =>
     typeof r.km_peca === 'number' && r.km_peca >= b.min && r.km_peca < b.max).length);
   charts.kmPeca = new Chart(ctx, {
@@ -5666,16 +4808,12 @@ function renderKmPecaChart() {
     }
   });
 }
-
 function renderGarantiaChart() {
   const ctx = document.getElementById('chartGarantia');
   if (!ctx) return;
   limparAviso(ctx.parentElement);
   const insightEl = document.getElementById('garantiaInsight');
-
   const data = DATA;
-  // Denominador = registros com a coluna preenchida. Antes, ausência de dado
-  // aparecia como "fora de garantia" e o donut ficava 100% cinza.
   const comInfo = data.filter(r => r.em_garantia !== null);
   if (!comInfo.length) {
     if (charts.garantia) { charts.garantia.destroy(); charts.garantia = null; }
@@ -5684,7 +4822,6 @@ function renderGarantiaChart() {
     if (insightEl) insightEl.innerHTML = '';
     return;
   }
-
   if (charts.garantia) charts.garantia.destroy();
   const inW = comInfo.filter(r => r.em_garantia).length;
   const outW = comInfo.length - inW;
@@ -5695,9 +4832,8 @@ function renderGarantiaChart() {
       labels: ['Em garantia', 'Fora de garantia'],
       datasets: [{
         data: [inW, outW],
-        // Binário coberto/não-coberto: uma cor com identidade, uma neutra.
         backgroundColor: [PALETA_CATEGORICA[0], COR_OUTROS],
-        borderColor: '#0A1410',
+        borderColor: SUPERFICIE_CARD,
         borderWidth: 2,
       }]
     },
@@ -5713,10 +4849,6 @@ function renderGarantiaChart() {
       }
     }
   });
-
-  // Antes havia aqui uma frase fixa afirmando que "falhas precoces concentram-se
-  // em fornecedores com menor índice de qualidade" — nunca calculada. Agora só
-  // reportamos o que foi de fato apurado.
   if (insightEl) {
     const valor = inWCost === null ? '' :
       ` · valor coberto: <strong style="color:var(--moss);">${esc(FMT_BRL_K(inWCost))}</strong>`;
@@ -5725,24 +4857,17 @@ function renderGarantiaChart() {
     insightEl.innerHTML = `<strong>${inW}</strong> de ${comInfo.length} peças falharam dentro da garantia${valor}.${cobertura}`;
   }
 }
-
 function renderCustoSistemaChart() {
   const ctx = document.getElementById('chartCustoSistema');
   if (!ctx) return;
   limparAviso(ctx.parentElement);
-
   if (!temDados(DATA, 'valor_peca')) {
     if (charts.custoSistema) { charts.custoSistema.destroy(); charts.custoSistema = null; }
     mostrarAviso(ctx.parentElement, 'Custo acumulado indisponível',
       'A coluna <strong>valor da peça</strong> não está preenchida na planilha.');
     return;
   }
-
   if (charts.custoSistema) charts.custoSistema.destroy();
-
-  // Era polarArea com 10 cores fixas — a área cresce com o quadrado do raio,
-  // exagerando as diferenças, e a 11ª categoria ficava sem cor. Barras
-  // horizontais comparam custo com honestidade e cabem rótulos longos.
   const map = {};
   DATA.forEach(r => {
     if (!r.sistema || typeof r.valor_peca !== 'number') return;
@@ -5758,7 +4883,6 @@ function renderCustoSistemaChart() {
     valores.push(resto.reduce((s, x) => s + x[1], 0));
   }
   const total = valores.reduce((s, v) => s + v, 0) || 1;
-
   charts.custoSistema = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -5790,7 +4914,6 @@ function renderCustoSistemaChart() {
     }
   });
 }
-
 function renderPartsRecommendations() {
   const data = DATA;
   const recs = [];
@@ -5798,9 +4921,6 @@ function renderPartsRecommendations() {
     document.getElementById('partsRecommendations').innerHTML = '<li class="alert-item"><div class="alert-bar info"></div><div><div class="alert-title">Sem dados suficientes</div><div class="alert-desc">Aguardando novos registros reais.</div></div><div class="alert-meta">INFO</div></li>';
     return;
   }
-
-  // 1. Top peça com mais falhas — ignora registros sem peça identificada,
-  // que antes viravam a recomendação "Reforçar estoque: PEÇA DIVERSA".
   const pecaCount = {};
   data.forEach(r => { if (r.peca_nome) pecaCount[r.peca_nome] = (pecaCount[r.peca_nome] || 0) + 1; });
   const topPeca = Object.entries(pecaCount).sort((a, b) => b[1] - a[1])[0];
@@ -5812,8 +4932,6 @@ function renderPartsRecommendations() {
       meta: 'AÇÃO'
     });
   }
-
-  // Fornecedores — só entram com nome identificado e amostra suficiente.
   const supMap = {};
   data.forEach(r => {
     if (!r.fornecedor) return;
@@ -5826,8 +4944,6 @@ function renderPartsRecommendations() {
   const comTaxa = Object.entries(supMap)
     .filter(([, v]) => v.comGarantia >= MIN_ITENS_FORNECEDOR)
     .map(([k, v]) => ({ name: k, ...v, pct: (v.emGarantia / v.comGarantia) * 100 }));
-
-  // 2. Maior retorno em garantia
   const worst = [...comTaxa].sort((a, b) => b.pct - a.pct)[0];
   if (worst) {
     recs.push({
@@ -5837,8 +4953,6 @@ function renderPartsRecommendations() {
       meta: 'COMPRAS'
     });
   }
-
-  // 3. Sistema mais caro — exige valor de peça
   if (temDados(data, 'valor_peca')) {
     const sistMap = {};
     data.forEach(r => {
@@ -5855,8 +4969,6 @@ function renderPartsRecommendations() {
       });
     }
   }
-
-  // 4. Mortalidade infantil — percentual sobre peças COM km registrado
   const kmInfo = contarCom(data, 'km_peca', v => v < 60000);
   if (kmInfo.pct !== null && kmInfo.atende > 0) {
     recs.push({
@@ -5866,8 +4978,6 @@ function renderPartsRecommendations() {
       meta: 'QUALIDADE'
     });
   }
-
-  // 5. Menor retorno em garantia
   const best = [...comTaxa].sort((a, b) => a.pct - b.pct)[0];
   if (best && worst && best.name !== worst.name) {
     recs.push({
@@ -5877,8 +4987,6 @@ function renderPartsRecommendations() {
       meta: 'ESTRATÉGIA'
     });
   }
-
-  // 6. SKUs com fornecedor único
   const peca2sup = {};
   data.forEach(r => {
     if (!r.peca_codigo || !r.fornecedor) return;
@@ -5895,12 +5003,10 @@ function renderPartsRecommendations() {
       meta: 'RISCO'
     });
   }
-
   if (!recs.length) {
     document.getElementById('partsRecommendations').innerHTML = '<li class="alert-item"><div class="alert-bar info"></div><div><div class="alert-title">Sem recomendações automáticas</div><div class="alert-desc">As regras precisam de peça, fornecedor, valor ou km registrados em quantidade suficiente.</div></div><div class="alert-meta">INFO</div></li>';
     return;
   }
-
   document.getElementById('partsRecommendations').innerHTML = recs.map(r => `
     <li class="alert-item">
       <div class="alert-bar ${esc(r.cls)}"></div>
@@ -5912,41 +5018,23 @@ function renderPartsRecommendations() {
     </li>
   `).join('');
 }
-
-// ============================================
-// RENDER ALL
-// ============================================
-// Marca que a Visão Geral ficou defasada enquanto estava oculta.
 let overviewDesatualizada = false;
-
 function abaAtiva() {
   return document.querySelector('.nav-item[data-tab].active')?.dataset.tab || 'overview';
 }
-
 function renderAll() {
   renderHeader();
   renderAvisoCobertura();
-
   const active = abaAtiva();
-
-  // Só redesenha a Visão Geral quando ela está visível. Antes os 7 gráficos
-  // eram reconstruídos a cada sincronização (15s) mesmo com outra aba aberta,
-  // e o treemap media um container de largura zero.
   if (active === 'overview') renderOverview();
   else overviewDesatualizada = true;
-
   if (active === 'map') renderMapAll();
   if (active === 'ops') renderOpsAll();
   if (active === 'parts') renderPartsAll();
   if (active === 'predict') renderPredictAll();
   if (active === 'records') renderRecordsTable();
 }
-
-// ============================================
-// INIT
-// ============================================
 window.addEventListener('DOMContentLoaded', () => {
-  // Navegação: <li> não é focável nem anunciado como controle por padrão.
   document.querySelectorAll('.nav-item[data-tab]').forEach(n => {
     n.setAttribute('role', 'tab');
     n.setAttribute('tabindex', '0');
@@ -5959,8 +5047,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
   document.querySelector('.nav')?.setAttribute('role', 'tablist');
-
-  // Itens de ação da sidebar (Exportar CSV / Relatório PDF)
   document.querySelectorAll('.nav-item[data-acao]').forEach(n => {
     n.setAttribute('role', 'button');
     n.setAttribute('tabindex', '0');
@@ -5970,8 +5056,6 @@ window.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); acao(); }
     });
   });
-
-  // Filtro de período
   document.querySelectorAll('.filter-pill[data-period]').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.filter-pill[data-period]').forEach(x => {
@@ -5984,7 +5068,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     b.setAttribute('aria-pressed', String(b.classList.contains('active')));
   });
-
   setupRecordsFilters();
   renderAll();
   startGoogleSheetsAutoRefresh();
